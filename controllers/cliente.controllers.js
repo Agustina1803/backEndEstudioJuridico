@@ -31,3 +31,21 @@ export const obtenerClientes = async (req, res) => {
         })
     }
 };
+
+//get por id
+export const obtenerClientePorId = async (req, res) =>{
+    try{
+        const listarClientePorId = await Cliente.findById(req.params.id);
+        if(!listarClientePorId){
+            return res.status(404).json({
+                mensaje: "El cliente con ese ID no existe"
+            });
+        }
+        res.status(200).json(listarClientePorId);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            mensaje: "Error al obtener el cliente por ID"
+        })
+    }
+};

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { crearCliente, obtenerClientes } from "../controllers/cliente.controllers.js";
+import { crearCliente, obtenerClientePorId, obtenerClientes } from "../controllers/cliente.controllers.js";
 
 
 
@@ -7,5 +7,6 @@ import { crearCliente, obtenerClientes } from "../controllers/cliente.controller
 const router = Router();
 
 router.route("/").post(crearCliente).get(obtenerClientes);
+router.route("/:id").get(obtenerClientePorId);
 
 export default router;
