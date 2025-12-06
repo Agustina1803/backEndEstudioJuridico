@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { crearCliente, obtenerClientePorId, obtenerClientes } from "../controllers/cliente.controllers.js";
+import { crearCliente, editarCliente, eliminarCliente, obtenerClientePorId, obtenerClientes } from "../controllers/cliente.controllers.js";
 
 
 
@@ -7,6 +7,6 @@ import { crearCliente, obtenerClientePorId, obtenerClientes } from "../controlle
 const router = Router();
 
 router.route("/").post(crearCliente).get(obtenerClientes);
-router.route("/:id").get(obtenerClientePorId);
+router.route("/:id").get(obtenerClientePorId).delete(eliminarCliente).put(editarCliente);
 
 export default router;
