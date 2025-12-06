@@ -17,3 +17,17 @@ export const crearCliente = async (req, res) => {
   }
 };
 
+
+//get
+
+export const obtenerClientes = async (req, res) => {
+    try{
+        const listaClientes = await Cliente.find();
+        res.status(200).json(listaClientes);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            mensaje: "Error al obtener los clientes"
+        })
+    }
+};
