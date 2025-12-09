@@ -23,7 +23,7 @@ export const listarCita = async (req, res) => {
     res.status(200).json(listaCita);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: "Error al obtener los productos" });
+    res.status(500).json({ mensaje: "Error al obtener las citas" });
   }
 };
 
@@ -34,13 +34,24 @@ export const listarCitaId = async (req, res) => {
     if (!listarCitaId) {
       return res
         .status(404)
-        .json({ mensaje: "El producto con ese ID no existe" });
+        .json({ mensaje: "La cita con ese ID no existe" });
     }
     res.status(200).json(listarCitaId);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: "Error al obtener el producto por ID" });
+    res.status(500).json({ mensaje: "Error al obtener la cita por ID" });
   }
 };
 
-
+export const borrarCitaId = async (req, res) =>{
+    try{
+        const citaBorrada = await Cita.findByIdAndDelete(req.params.id);
+        if(!citaBorrada){
+            return res.status(404).json({mensaje: "La cita con ese ID no existe"});
+        }
+        res.status(200).json({mensaje: "La cita fue borrada con exito"});
+    }catch(error){
+        console.error(error);
+        res.status(500).json({mensaje: "Error al borrar la cita por ID "})
+    }
+}
