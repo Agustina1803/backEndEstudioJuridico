@@ -15,3 +15,15 @@ try{
     });
 }
 }
+
+// funcion para listar las citas
+
+export const listarCita = async (req, res) =>{
+    try{
+        const listaCita = await Cita.find();
+        res.status(200).json(listaCita);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({mensaje:"Error al obtener los productos"})
+    }
+}
