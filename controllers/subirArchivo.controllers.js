@@ -49,3 +49,44 @@ export const obtenerSubirArchivoPorId = async (req, res) =>{
         })
     }
 };
+
+//delete
+export const eliminarSubirArchivo = async (req, res) =>{
+try{
+    const ArchivoBorrado = await SubirArchivo.findByIdAndDelete(req.params.id);
+    if(!ArchivoBorrado){
+        return res.status(404).json({
+            mensaje: "El archivo con ese ID no existe"
+        })
+    }
+    res.status(200).json({
+        mensaje: "archivo eliminado con exito"
+    });
+}catch(error){
+    console.log(error);
+    res.status(500).json({
+        mensaje: "Error al borrar el archivo por ID"
+    })
+}
+};
+
+// update
+
+export const editarSubirArchivo = async (req, res) => {
+    try{
+        const ArchivoEditado = await SubirArchivo.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        if(!ArchivoEditado){
+            return res.status(400).json({
+                mensaje: "El archivo con ese ID no existe"
+            })
+        };
+        res.status(200).json({
+            mensaje: "Archivo actualizado con exito"
+        });
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            mensaje: "Error al actualizar el archivo por ID"
+        });
+    }
+};
