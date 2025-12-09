@@ -31,12 +31,12 @@ cliente:{
 },
 abogado: {
   type: mongoose.Schema.Types.ObjectId,
-  ref: 'Abogado',   // nombre del modelo de abogados
+  ref: "usuario",   // nombre del modelo de abogados
   required: true,
   validate: {
     validator: async function(value) {
       // Verifica que el abogado exista en la colección
-      const existe = await mongoose.model('Abogado').exists({ _id: value });
+      const existe = await mongoose.model('usuario').exists({ _id: value });
       return existe;
     }
   }
