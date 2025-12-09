@@ -35,6 +35,11 @@ const usuarioSchema = new Schema({
       "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial",
     ],
   },
+  role: {
+    type: String,
+    required: [true, "El rol es obligatorio"],
+    enum: ["admin", "secre", "abog"],
+  },
 });
 
 const Usuario = mongoose.model("usuario", usuarioSchema);
