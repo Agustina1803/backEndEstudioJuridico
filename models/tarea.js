@@ -43,4 +43,6 @@ const tareaSchema = new Schema({
 });
 
 
-const Tarea = mongoose.model("cita", citaSchema)
+const Tarea = mongoose.model("tarea", tareaSchema);
+
+export default Tarea;
