@@ -37,8 +37,5 @@ const usuarioSchema = new Schema({
   },
 });
 
-// ⚠️ Primero definimos el modelo
-const Usuario = mongoose.model("Usuario", usuarioSchema);
-
-// ⚠️ Luego lo exportamos
+const Usuario = mongoose.model("usuario", usuarioSchema);
 export default Usuario;
