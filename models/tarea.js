@@ -41,3 +41,6 @@ const tareaSchema = new Schema({
     enum:["Pendiente", "Proceso", "Completada", "Cancelada", "Reprogramada"],
   }
 });
+
+
+const Tarea = mongoose.model("cita", citaSchema)
