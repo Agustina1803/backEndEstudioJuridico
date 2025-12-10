@@ -1,8 +1,8 @@
-import {validationResult} from "express-validation";
+import {validationResult} from "express-validator";
 
 const resultadoValidacion = (req, res, next) =>{
     const errorDeValidacion = validationResult(req);
-    if(!errorDeValidacion.isEmpy()){
+    if(!errorDeValidacion.isEmpty()){
         return res.status(400).json(errorDeValidacion.array());
     } next();
 }
