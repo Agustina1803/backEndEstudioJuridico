@@ -1,11 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 
-/* "nombreDeJuicio",
-   "numeroExpediente",
-   "nombreCliente",
-   "juzgado",
-   "fecha",
-   "seleccionarArchivo", */
 
 const juicioSchema = new Schema({
 
@@ -20,7 +14,7 @@ const juicioSchema = new Schema({
         type: String,
         required: [true, "El nombre del caso es obligatorio"],
         minlength: [4, "El nombre del caso debe tener al menos 4 caracteres"],
-        maxlength: [50, "El nombre del caso no debe exceder los 50 caracteres"],
+        maxlength: [100, "El nombre del caso no debe exceder los 100 caracteres"],
     },
 
     numeroExpediente: {
