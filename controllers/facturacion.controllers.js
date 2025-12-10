@@ -18,7 +18,6 @@ export const crearFacturacion = async (req, res) => {
 };
 
 //get
-
 export const listaFacturacion = async (req, res) => {
     try{
         const listaFacturas = await listaFacturas.find();
@@ -27,6 +26,24 @@ export const listaFacturacion = async (req, res) => {
         console.log(error);
         res.status(500).json({
             mensaje: "Error al obtener las facturas"
+        })
+    }
+};
+
+//get por id
+export const obtenerFacturacionPorId = async (req, res) =>{
+    try{
+        const obtenerFacturacionPorId = await Facturacion.findById(req.params.id);
+        if(!obtenerFacturacionPorId){
+            return res.status(404).json({
+                mensaje: "La facturacion con ese ID no existe"
+            });
+        }
+        res.status(200).json(obtenerFacturacionPorId);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            mensaje: "La facturacion el archivo por ID"
         })
     }
 };
