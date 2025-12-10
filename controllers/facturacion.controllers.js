@@ -17,3 +17,16 @@ export const crearFacturacion = async (req, res) => {
   }
 };
 
+//get
+
+export const listaFacturacion = async (req, res) => {
+    try{
+        const listaFacturas = await listaFacturas.find();
+        res.status(200).json(listaFacturas);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            mensaje: "Error al obtener las facturas"
+        })
+    }
+};
