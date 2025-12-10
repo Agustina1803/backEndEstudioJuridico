@@ -80,6 +80,7 @@ export const editarCliente = async (req, res) => {
                 mensaje: "El cliente con ese ID no existe"
             })
         };
+        console.info("No esta actualizando?? ")
         res.status(200).json({
             mensaje: "Cliente actualizado con exito"
         });

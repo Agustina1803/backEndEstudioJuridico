@@ -34,7 +34,7 @@ export const listarTareaPorID = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      mensaje: "Error en el servidor al obtener los usuarios "
+      mensaje: "Error en el servidor al obtener los usuarios ",
     });
   }
 };
@@ -55,5 +55,30 @@ export const borrarTareaPorID = async (req, res) => {
     res
       .status(500)
       .json({ mensaje: "Error en el servidor al obtener los usuarios" });
+  }
+};
+
+export const actualizarTareaPorID = async (req, res) => {
+  try {
+    const tareaActualizada = await Tarea.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!tareaActualizada) {
+      return res
+        .status(404)
+        .json({ mensaje: "Tarea no encontrada por ese ID" });
+    }
+    res
+      .status(200)
+      .json({
+        mensaje: "Tarea actualizada exitosamente",
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error en el servidor al obtener los usuarios",
+    });
   }
 };
