@@ -15,7 +15,5 @@ router.use("/subirArchivos", subirArchivoRouter);
 router.use("/tarea", tareaRouter);
 
 
-
-
 router.use("/juicios", juicioRouter);
 export default router;
