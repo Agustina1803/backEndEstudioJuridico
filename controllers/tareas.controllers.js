@@ -23,3 +23,18 @@ export const listarTarea = async (req, res) => {
     });
   }
 };
+
+export const listarTareaPorID = async (req, res) => {
+  try {
+    const listaDeTareaPorID = await Tarea.findById(req.params.id);
+    if (!listaDeTareaPorID) {
+      return res.status(404).json({ mensaje: "Tarea no encontrado" });
+    }
+    res.status(200).json(listaDeTareaPorID);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      mensaje: "Error en el servidor al obtener los usuarios ",
+    });
+  }
+};
