@@ -12,7 +12,7 @@ router.use("/citas", citaRoutes)
 router.use("/clientes", clienteRouter)
 router.use("/usuarios", usuarioRouter);
 router.use("/subirArchivos", subirArchivoRouter);
-router.use("/tarea", tareaRouter)
+router.use("/tarea", tareaRouter);
 
 
 export default router;
