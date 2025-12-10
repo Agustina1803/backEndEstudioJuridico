@@ -47,3 +47,43 @@ export const obtenerFacturacionPorId = async (req, res) =>{
         })
     }
 };
+
+//delete
+export const eliminarFacturacion = async (req, res) =>{
+try{
+    const facturacionBorrado = await Facturacion.findByIdAndDelete(req.params.id);
+    if(!facturacionBorrado){
+        return res.status(404).json({
+            mensaje: "La factura con ese ID no existe"
+        })
+    }
+    res.status(200).json({
+        mensaje: "La factura fue eliminada con exito"
+    });
+}catch(error){
+    console.log(error);
+    res.status(500).json({
+        mensaje: "Error al borrar la factura por ID"
+    })
+}
+};
+// update
+
+export const editarFacturacion = async (req, res) => {
+    try{
+        const facturacionEditado = await Facturacion.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        if(!facturacionEditado){
+            return res.status(400).json({
+                mensaje: "La facturacion con ese ID no existe"
+            })
+        };
+        res.status(200).json({
+            mensaje: "Facturacion actualizada con exito"
+        });
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            mensaje: "Error al actualizar factura por ID"
+        });
+    }
+};

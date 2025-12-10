@@ -1,8 +1,10 @@
 import { Router } from "express";
-import {crearFacturacion } from "../controllers/facturacion.controllers.js";
+import {crearFacturacion, editarFacturacion, eliminarFacturacion, listaFacturacion, obtenerFacturacionPorId } from "../controllers/facturacion.controllers.js";
 
 const router = Router();
 
-router.route("/").post(crearFacturacion);
+router.route("/").post(crearFacturacion).get(listaFacturacion);
+router.route("/:id").get(obtenerFacturacionPorId).delete(eliminarFacturacion).put(editarFacturacion);
+
 
 export default router;
