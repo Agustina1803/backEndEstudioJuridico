@@ -20,7 +20,7 @@ export const crearFacturacion = async (req, res) => {
 //get
 export const listaFacturacion = async (req, res) => {
     try{
-        const listaFacturas = await listaFacturas.find();
+        const listaFacturas = await Facturacion.find();
         res.status(200).json(listaFacturas);
     }catch(error){
         console.log(error);
