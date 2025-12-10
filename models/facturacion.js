@@ -46,3 +46,5 @@ estado:{
 })
 
 
+const Facturacion = mongoose.model('facturacion', facturacionSchema);
+export default Facturacion;
