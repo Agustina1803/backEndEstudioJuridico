@@ -1,0 +1,58 @@
+import mongoose, { Schema } from "mongoose";
+
+/* "nombreDeJuicio",
+   "numeroExpediente",
+   "nombreCliente",
+   "juzgado",
+   "fecha",
+   "seleccionarArchivo", */
+
+const juicioSchema = new Schema({
+
+    nombreCliente: {
+        type: String,
+        required: [true, "El nombre del cliente es obligatorio"],
+        minlength: [4, "El nombre del cliente debe tener al menos 4 caracteres"],
+        maxlength: [30, "El nombre del cliente no debe exceder los 30 caracteres"],
+    },
+
+    nombreDeJuicio: {
+        type: String,
+        required: [true, "El nombre del caso es obligatorio"],
+        minlength: [4, "El nombre del caso debe tener al menos 4 caracteres"],
+        maxlength: [50, "El nombre del caso no debe exceder los 50 caracteres"],
+    },
+
+    numeroExpediente: {
+        type: String,
+        required: [true, "El Número de expediente es obligatorio"],
+        match: [/^\d+$/, "El número de expediente no es válido"],
+    },
+
+    juzgado: {
+        type: String,
+        required: [true, "El nombre del Juzgado es obligatorio"],
+        minlength: [4, "El nombre del caso debe tener al menos 4 caracteres"],
+        maxlength: [50, "El nombre del caso no debe exceder los 50 caracteres"],
+    },
+
+    fecha: {
+        type: Date,
+        required: true,
+        validate: {
+            validator: function (value) {
+                const day = value.getDay();
+                return day >= 1 && day <= 5;
+            },
+            message: props => `El día ${props.value.toDateString()} no es válido para agendar eventos`
+        }
+    },
+
+    seleccionarArchivo: {
+        type: String,
+        required: [true, "El archivo es obligatorio"],
+    },
+});
+
+const Juicio = mongoose.model("juicio", juicioSchema);
+export default Juicio;
