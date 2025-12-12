@@ -58,4 +58,9 @@ const validacionCliente = [
     .withMessage("Solo se permiten números")
     .isLength({ min: 7, max: 15 })
     .withMessage("El teléfono debe tener entre 7 y 15 dígitos"),
+    body("estadoCliente")
+    .notEmpty()
+    .withMessage("El estado del cliente es obligatorio")
+    .isIn([["Activo", "Inactivo"]])
+    .withMessage("El estado del cliente debe ser una de las sigueintes Activo,Inactivo")
 ];
