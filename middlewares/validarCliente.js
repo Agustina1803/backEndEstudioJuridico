@@ -28,16 +28,34 @@ const validacionCliente = [
       }
       return true;
     })
-    .custom(async(valor,{req})=>{
-        const existeIdentificador = await Cliente.findOne({identificador: valor});
-        if(!existeIdentificador){
-            return true;
-        }
+    .custom(async (valor, { req }) => {
+      const existeIdentificador = await Cliente.findOne({
+        identificador: valor,
+      });
+      if (!existeIdentificador) {
+        return true;
+      }
 
-        if(req.params.id && req.params.id.toString() === existeIdentificador._id.toString()){
-            return true;
-        }
-        throw new Error ("Ya existe un cliente con este DNI/CUIL y no puede ser duplicado")
+      if (
+        req.params.id &&
+        req.params.id.toString() === existeIdentificador._id.toString()
+      ) {
+        return true;
+      }
+      throw new Error(
+        "Ya existe un cliente con este DNI/CUIL y no puede ser duplicado"
+      );
     }),
-    
+  body("email")
+    .notEmpty()
+    .withMessage("El email del cliente es obligatorio")
+    .isEmail()
+    .withMessage("el email del cliente debe tener un formato valido"),
+  body("telefono")
+    .notEmpty()
+    .withMessage("El telefono del cliente es obligatorio")
+    .matches(/^\d+$/)
+    .withMessage("Solo se permiten números")
+    .isLength({ min: 7, max: 15 })
+    .withMessage("El teléfono debe tener entre 7 y 15 dígitos"),
 ];
