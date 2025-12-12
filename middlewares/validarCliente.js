@@ -1,5 +1,6 @@
-const { body } = require("express-validator");
-const { default: Cliente } = require("../models/cliente");
+import { body } from "express-validator";
+import  Cliente  from "../models/cliente.js";
+import resultadoValidacion from "./resultadoValidacion.js";
 
 const validacionCliente = [
   body("nombre")
@@ -61,6 +62,22 @@ const validacionCliente = [
     body("estadoCliente")
     .notEmpty()
     .withMessage("El estado del cliente es obligatorio")
-    .isIn([["Activo", "Inactivo"]])
+    .isIn(["Activo", "Inactivo"])
     .withMessage("El estado del cliente debe ser una de las sigueintes Activo,Inactivo")
+    .custom(async (valor, {req}) =>{
+        const existeEmail = await Cliente.findOne({
+            email: valor
+        })
+        if(!existeEmail){
+            return true
+        }
+        if(req.params.id && req.params.is.toString() === existeEmail._id.toString()){
+            return true
+        } 
+        throw new Error ("Ya existe un cliente registrado con ese email, no pueden ser duplicados")
+    }),
+
+    (req, res, next) => resultadoValidacion(req, res, next)
 ];
+
+export default validacionCliente
