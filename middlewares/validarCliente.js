@@ -1,4 +1,5 @@
 const { body } = require("express-validator");
+const { default: Cliente } = require("../models/cliente");
 
 const validacionCliente = [
   body("nombre")
@@ -26,5 +27,17 @@ const validacionCliente = [
         }
       }
       return true;
+    })
+    .custom(async(valor,{req})=>{
+        const existeIdentificador = await Cliente.findOne({identificador: valor});
+        if(!existeIdentificador){
+            return true;
+        }
+
+        if(req.params.id && req.params.id.toString() === existeIdentificador._id.toString()){
+            return true;
+        }
+        throw new Error ("Ya existe un cliente con este DNI/CUIL y no puede ser duplicado")
     }),
+    
 ];
