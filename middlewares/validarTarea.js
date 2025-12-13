@@ -46,5 +46,9 @@ const validacionTarea = [
     body("estado")
     .notEmpty()
     .withMessage("El estado de la tarea es obligatoria")
-    .isIn(["Pendiente","Proceso", "Completa","Cancelada","Reprogramada"])
+    .isIn(["Pendiente","Proceso", "Completa","Cancelada","Reprogramada"]),
+
+    (req, res, next) => resultadoValidacion(req, res, next)
 ];
+
+export default validacionTarea;
