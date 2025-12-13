@@ -49,4 +49,8 @@ const validacionUsuario = [
     .notEmpty()
     .withMessage("EL rol del usuario es obligatorio")
     .isIn(["admin", "secre", "abog"]),
+
+    (req, res, next) => resultadoValidacion(req, res, next)
 ]
+
+export default validacionUsuario;
