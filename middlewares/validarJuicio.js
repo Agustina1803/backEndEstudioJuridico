@@ -25,7 +25,7 @@ const validacionJuicio = [
         .isLength({ min: 1, max: 15 })
         .withMessage("El número de expediente debe tener entre 1 y 15 dígitos"),
 
-    body("nombreJuzgado")
+    body("juzgado")
         .notEmpty()
         .withMessage("El nombre del juzgado es obligatorio")
         .isLength({ min: 4, max: 50 })
@@ -47,12 +47,12 @@ const validacionJuicio = [
     body("seleccionarArchivo")
         .notEmpty()
         .withMessage("El archivo es obligatorio"),
-
+/* 
     body("role")
         .notEmpty()
         .withMessage("EL rol del usuario es obligatorio")
         .isIn(["abog"]),
-
+ */
     (req, res, next) => resultadoValidacion(req, res, next),
 ];
 
