@@ -31,4 +31,22 @@ const validacionUsuario = [
         }
         throw new Errror ("Ya existe un usuario registrado con ese email, no pueden ser duplicados")
     }),
+    body("telefono")
+    .notEmpty()
+    .withMessage("El telefono del cliente es obligatorio")
+    .matches(/^\d+$/)
+    .withMessage("Solo se permiten números")
+    .isLength({ min: 7, max: 15 })
+    .withMessage("El teléfono debe tener entre 7 y 15 dígitos"),
+    body("formBasicPassword")
+    .notEmpty()
+    .withMessage("La contraseña del usuario es obligatoria")
+    .matches(
+         /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/
+    )
+    .withMessage("La contrasela debe incluir mayúsculas, minúsculas, número y carácteres especiales y tener entre 8 a 16 caracteres"),
+    body("role")
+    .notEmpty()
+    .withMessage("EL rol del usuario es obligatorio")
+    .isIn(["admin", "secre", "abog"]),
 ]
