@@ -39,4 +39,12 @@ const validacionTarea = [
       }
       return true;
     }),
+    body("prioridad")
+    .notEmpty()
+    .withMessage("La prioridad de la tarea es obligatoria")
+    .isIn(["alta", "media", "baja"]),
+    body("estado")
+    .notEmpty()
+    .withMessage("El estado de la tarea es obligatoria")
+    .isIn(["Pendiente","Proceso", "Completa","Cancelada","Reprogramada"])
 ];
