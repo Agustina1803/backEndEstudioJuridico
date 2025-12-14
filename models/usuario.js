@@ -29,11 +29,7 @@ const usuarioSchema = new Schema({
   },
   formBasicPassword: {
     type: String,
-    required: [true, "La contraseña es obligatoria"],
-    match: [
-      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-      "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial",
-    ],
+    required: true
   },
   role: {
     type: String,

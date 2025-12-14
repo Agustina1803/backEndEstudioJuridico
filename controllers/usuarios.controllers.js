@@ -1,8 +1,15 @@
 import Usuario from '../models/usuario.js';
+import bycrypt from "bcrypt";
 
 //POST
 export const crearUsuario = async (req, res) => {
     try {
+        const saltos = bycrypt.genSaltSync(10);
+        const passwordEncriptada = bycrypt.hashSync(
+            req.body.formBasicPassword,
+            saltos
+        );
+        req.body.formBasicPassword = passwordEncriptada;
         const nuevoUsuario = new Usuario(req.body);
         await nuevoUsuario.save();
         res.status(201).json({
@@ -10,7 +17,7 @@ export const crearUsuario = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             message: 'Error en el servidor al crear el usuario',
         });
