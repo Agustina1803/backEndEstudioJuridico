@@ -34,5 +34,17 @@ const validarFactura = [
     body("seleccionarArchivo")
         .notEmpty()
         .withMessage("El archivo es obligatorio"),
-]
 
+    body("monto")
+        .notEmpty()
+        .withMessage("El monto es obligatorio")
+        .custom((valor) => {
+            if (isNaN(valor) || valor <= 0) {
+                throw new Error("El monto debe ser un numero valido mayor a 0")
+            }
+            return true;
+        })
+        .isIn(["Pendiente", "Pagado", "Anulada"]),
+    (req, res, next) => resultadoValidacion(req, res, next),
+]
+export default validarFactura;
