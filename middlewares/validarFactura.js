@@ -43,7 +43,10 @@ const validarFactura = [
                 throw new Error("El monto debe ser un numero valido mayor a 0")
             }
             return true;
-        })
+        }),
+        body("estado")
+    .notEmpty()
+    .withMessage("El estado es obligatorio")
         .isIn(["Pendiente", "Pagado", "Anulada"]),
     (req, res, next) => resultadoValidacion(req, res, next),
 ]

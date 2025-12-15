@@ -1,6 +1,6 @@
-import {body, param} from "express-validator"
+import {body} from "express-validator";
 import resultadoValidacion from "./resultadoValidacion.js";
-import Usuario from "../models/usuario.js"
+import Usuario from "../models/usuario.js";
 import Cita from "../models/cita.js";
 import mongoose from "mongoose";
 
