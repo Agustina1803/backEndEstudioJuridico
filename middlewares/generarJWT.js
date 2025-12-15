@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 const generarJWT = (email, formBasicPassword, role) =>{
 try{
 const payload = {email, formBasicPassword, role}
-const token = jwt.sing(payload, process.env.SCRET_JWT, {
+const token = jwt.sign(payload, process.env.SCRET_JWT, {
     expiresIn: "3h"
 });
 return token;

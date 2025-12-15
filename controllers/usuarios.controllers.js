@@ -1,3 +1,4 @@
+import generarJWT from "../middlewares/generarJWT.js";
 import Usuario from "../models/usuario.js";
 import bycrypt from "bcrypt";
 
@@ -122,7 +123,7 @@ export const login = async (req, res) => {
       nombre: usuarioBuscado.nombre,
       role: usuarioBuscado.role,
     });
-  } catch (erorr) {
+  } catch (error) {
     console.error(error)
     res.status(500).send("Error en el login del usuario");
   }
