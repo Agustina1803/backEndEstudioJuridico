@@ -27,6 +27,26 @@ const validarArchivo = (req, res, next) => {
   }
 
   next();
+
+  [body("nombre")
+      .notEmpty()
+      .withMessage("El nombre del cliente es obligatorio")
+      .isLength({ min: 10, max: 30 }),
+
+      body("fecha")
+          .notEmpty()
+          .withMessage("La fecha de la cita es obligatoria")
+          .custom((valor) => {
+              const fecha = new Date(valor);
+               const day = fecha.getDay();
+               if(day <1  || day>5  ){
+                  throw new Error(
+                      `El dia ${fecha.toDateString()} no es un dia habil`
+                  );
+               }
+               return true;
+          }),
+  ];
 };
 
 export default { validarsubirArchivos, validarArchivo };
