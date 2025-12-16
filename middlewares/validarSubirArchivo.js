@@ -2,9 +2,9 @@ import multer from 'multer';
 import { validationResult } from 'express-validator';
 import resultadoValidacion from "./resultadoValidacion.js";
 
-const storage = multer.memoryStorage();
+/* const storage = multer.memoryStorage(); */
 
-const validarsubirArchivos = multer({
+const validarsubirArchivos = [ /* multer({
   storage,
   fileFilter: (req, file, cb) => {
        const archivosPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
@@ -13,43 +13,30 @@ const validarsubirArchivos = multer({
     }
     cb(null, true);
   }
-});
+})
 
-const validarArchivo = (req, res, next) => {
-  const errors = validationResult(req);
+.single('seleccionarArchivo'),
 
-  if (!req.file) {
-    return res.status(400).json({ error: 'Debes subir un archivo' });
-  }
+ */
+    body("nombreCliente")
+        .notEmpty()
+        .withMessage("El nombre del usuario es obligatorio")
+        .isLength({ min: 4, max: 50 })
+        .withMessage("El nombre del usuario debe tener entre 4 y 50 caracteres"),
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errores: errors.array() });
-  }
+    body("tipoDeArchivo")
+        .notEmpty()
+        .withMessage("El tipo de archivo es obligatorio")
+        .isIn(['demanda', 'contrato', 'escrito', 'poder', 'notificacion']),
+    (req, res, next) => resultadoValidacion(req, res, next),
 
-  next();
+    body("seleccionarArchivo")
+        .notEmpty()
+        .withMessage("El archivo es obligatorio"),
+];  
 
-  [body("nombre")
-      .notEmpty()
-      .withMessage("El nombre del cliente es obligatorio")
-      .isLength({ min: 10, max: 30 }),
+export default validarSubirArchivos;
 
-      body("fecha")
-          .notEmpty()
-          .withMessage("La fecha de la cita es obligatoria")
-          .custom((valor) => {
-              const fecha = new Date(valor);
-               const day = fecha.getDay();
-               if(day <1  || day>5  ){
-                  throw new Error(
-                      `El dia ${fecha.toDateString()} no es un dia habil`
-                  );
-               }
-               return true;
-          }),
-  ];
-};
-
-export default { validarsubirArchivos, validarArchivo };
 
 
 
