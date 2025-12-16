@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import validarSubirArchivo from '../middlewares/validarSubirArchivo.js';
+
 
 
 const subirArchivoSchema = new Schema({
