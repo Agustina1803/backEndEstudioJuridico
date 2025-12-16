@@ -1,35 +1,41 @@
-import multer from 'multer';
-import { validationResult } from 'express-validator';
+import { body } from "express-validator";
 import resultadoValidacion from "./resultadoValidacion.js";
 
-const storage = multer.memoryStorage();
+const validarSubirArchivos = [ 
+    body("nombreCliente")
+        .notEmpty()
+        .withMessage("El nombre del cliente es obligatorio")
+        .isLength({ min: 10, max: 50 })
+        .withMessage("El nombre del cliente debe tener entre 10 y 50 caracteres"),
 
-const validarsubirArchivos = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-       const archivosPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
-    if (!archivosPermitidos.includes(file.mimetype)) {
-      return cb(new Error('Tipo de archivo no permitido'), false);
-    }
-    cb(null, true);
-  }
-});
+    body("tipodearchivo")
+        .notEmpty()
+        .withMessage("El tipo de archivo es obligatorio")
+        .isIn(['demanda', 'contrato', 'escrito', 'poder', 'notificacion']),
+    
+    body("seleccionarArchivo")
+        .notEmpty()
+        .withMessage("El archivo es obligatorio"),
 
-const validarArchivo = (req, res, next) => {
-  const errors = validationResult(req);
+    body("fecha")
+            .notEmpty()
+                .withMessage("La fecha es obligatoria")
+                .custom((valor) => {
+                    const fecha = new Date(valor);
+                    const day = fecha.getDay();
+                    if (day < 1 || day > 5) {
+                        throw new Error(
+                            `El día ${fecha.toDateString()} no es un día hábil`
+                        );
+                    }
+                    return true;
+                }),
 
-  if (!req.file) {
-    return res.status(400).json({ error: 'Debes subir un archivo' });
-  }
+        (req, res, next) => resultadoValidacion(req, res, next),
+];  
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errores: errors.array() });
-  }
+export default validarSubirArchivos;
 
-  next();
-};
-
-export default { validarsubirArchivos, validarArchivo };
 
 
 
