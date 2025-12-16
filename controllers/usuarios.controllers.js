@@ -109,7 +109,7 @@ export const login = async (req, res) => {
     if (!usuarioBuscado) {
       return res.status(404).send("Usario no encontrado");
     }
-    const passwordCorrecto = bycrypt.compareSync(
+    const passwordCorrecto = bcrypt.compareSync(
       formBasicPassword,
       usuarioBuscado.formBasicPassword
     );
