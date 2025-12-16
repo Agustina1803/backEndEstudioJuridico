@@ -1,8 +1,5 @@
-import {body, param} from "express-validator"
+import {body} from "express-validator"
 import resultadoValidacion from "./resultadoValidacion.js";
-import Juicio from "../models/juicio.js";
-import Usuario from "../models/usuario.js"
-import mongoose from "mongoose";
 
 const validacionJuicio = [
     body("nombreCliente")
