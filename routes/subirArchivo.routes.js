@@ -3,9 +3,12 @@ import { crearSubirArchivo,listaSubirArchivo,obtenerSubirArchivoPorId,eliminarSu
 import validarSubirArchivo from '../middlewares/validarSubirArchivo.js';
 import validarIds from "../middlewares/validarIds.js"
 import verficarJWT from "../middlewares/verificarJWT.js";
+import multer from "multer";
 
 const router = Router();
-router.route("/").post([verficarJWT,validarSubirArchivo], crearSubirArchivo).get(listaSubirArchivo);
+const upload = multer({dest:"uploads/"});
+
+router.route("/").post([verficarJWT,upload.single("file"),validarSubirArchivo], crearSubirArchivo).get(listaSubirArchivo);
 router.route("/:id").get(validarIds, obtenerSubirArchivoPorId).delete([verficarJWT,validarIds], eliminarSubirArchivo).put([verficarJWT,validarIds, validarSubirArchivo], editarSubirArchivo);
 
 
