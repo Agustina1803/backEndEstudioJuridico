@@ -1,5 +1,6 @@
 import SubirArchivo from "../models/subirArchivo.js";
 import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
 //POST
 export const crearSubirArchivo = async (req, res) => {
@@ -9,6 +10,9 @@ export const crearSubirArchivo = async (req, res) => {
       folder: "archivos_pdf",
       pages: true,
     });
+
+    fs.unlinkSync(req.file.path);
+
     const archivoNuevo = new SubirArchivo({
       nombreCliente: req.body.nombreCliente,
       tipodearchivo: req.body.tipodearchivo,
@@ -73,9 +77,12 @@ export const eliminarSubirArchivo = async (req, res) => {
         mensaje: "El archivo con ese ID no existe",
       });
     }
-    await cloudinary.uploader.destroy(ArchivoBorrado.seleccionarArchivo.public_id, {
-      resource_type: "image",
-    });
+    await cloudinary.uploader.destroy(
+      ArchivoBorrado.seleccionarArchivo.public_id,
+      {
+        resource_type: "image",
+      }
+    );
 
     res.status(200).json({
       mensaje: "archivo eliminado con exito",
