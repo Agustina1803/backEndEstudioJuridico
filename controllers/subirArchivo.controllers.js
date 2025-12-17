@@ -1,21 +1,36 @@
 import SubirArchivo from "../models/subirArchivo.js";
+import {v2 as cloudinary} from "cloudinary";
 
 
 //POST
 export const crearSubirArchivo = async (req, res) => {
-    try {
-        const archivoNuevo = new SubirArchivo(req.body);
-        await archivoNuevo.save();
-        console.log(req.body);
-        res.status(201).json({
-            mensaje: "El archivo fue subido con exito",
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            mensaje: "Error en el servidor al subir el archivo",
-        });
-    }
+ try{
+    const resultado = await cloudinary.uploader.upload(req.file.path, {
+        resourse_type: "image",
+        folder: "archivos_pdf",
+        pages: true,
+    });
+    const archivoNuevo = new SubirArchivo({
+        nombreCliente: req.body.nombreCliente,
+        tipodearchivo: req.body.tipodearchivo,
+        fecha: req.body.fecha,
+        seleccionrArchivo: {
+            url: resultado.secure_url,
+            public_id: resultado.public_id,
+        },
+    });
+    await archivoNuevo.save();
+    console.info(req.body);
+    res.status(201).json({
+        mensaje:"El archivo fue subido con éxito",
+        archivo: archivoNuevo,
+    })
+ }catch(error){
+    console.error(error);
+    res.status(500).json({
+        mensaje: "Error en el servidor al subir el archivo"
+    })
+ }
 };
 
 //get
