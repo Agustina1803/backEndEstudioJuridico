@@ -13,9 +13,7 @@ const validarSubirArchivos = [
         .withMessage("El tipo de archivo es obligatorio")
         .isIn(['demanda', 'contrato', 'escrito', 'poder', 'notificacion']),
     
-    body("seleccionarArchivo")
-        .notEmpty()
-        .withMessage("El archivo es obligatorio"),
+
 
     body("fecha")
             .notEmpty()
