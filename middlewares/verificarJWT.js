@@ -10,6 +10,7 @@ const verficarJWT = (req, res, next) =>{
         req.email = payload.email;
        // req.formBasicPassword = payload.formBasicPassword;
         req.role = payload.role;
+        
         next();
     }catch(error){
         console.error(error.mensaje);
