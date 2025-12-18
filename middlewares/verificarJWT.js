@@ -9,6 +9,7 @@ const verficarJWT = (req, res, next) =>{
         const payload = jwt.verify(token, process.env.SECRET_JWT);
         req.email = payload.email;
         req.role = payload.role;
+        
         next();
     }catch(error){
         console.error(error.mensaje);
