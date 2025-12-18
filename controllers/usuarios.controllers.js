@@ -1,12 +1,12 @@
 import generarJWT from "../middlewares/generarJWT.js";
 import Usuario from "../models/usuario.js";
-import bycrypt from "bcrypt";
+import bcrypt from "bcrypt";
 
 //POST
 export const crearUsuario = async (req, res) => {
   try {
-    const saltos = bycrypt.genSaltSync(10);
-    const passwordEncriptada = bycrypt.hashSync(
+    const saltos = bcrypt.genSaltSync(10);
+    const passwordEncriptada = bcrypt.hashSync(
       req.body.formBasicPassword,
       saltos
     );
@@ -109,7 +109,7 @@ export const login = async (req, res) => {
     if (!usuarioBuscado) {
       return res.status(404).send("Usario no encontrado");
     }
-    const passwordCorrecto = bycrypt.compareSync(
+    const passwordCorrecto = bcrypt.compareSync(
       formBasicPassword,
       usuarioBuscado.formBasicPassword
     );
