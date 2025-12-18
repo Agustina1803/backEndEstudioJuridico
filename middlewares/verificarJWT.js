@@ -8,7 +8,6 @@ const verficarJWT = (req, res, next) =>{
         }
         const payload = jwt.verify(token, process.env.SECRET_JWT);
         req.email = payload.email;
-       // req.formBasicPassword = payload.formBasicPassword;
         req.role = payload.role;
         
         next();
