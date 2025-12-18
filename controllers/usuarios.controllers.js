@@ -5,8 +5,8 @@ import bcrypt from "bcrypt";
 //POST
 export const crearUsuario = async (req, res) => {
   try {
-    const saltos = bycrypt.genSaltSync(10);
-    const passwordEncriptada = bycrypt.hashSync(
+    const saltos = bcrypt.genSaltSync(10);
+    const passwordEncriptada = bcrypt.hashSync(
       req.body.formBasicPassword,
       saltos
     );
