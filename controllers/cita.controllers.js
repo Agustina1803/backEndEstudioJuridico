@@ -17,9 +17,16 @@ export const crearCita = async (req, res) => {
 
 export const listarCita = async (req, res) => {
   try {
-    const listaCita = await Cita.find();
-    res.status(200).json(listaCita);
-  } catch (error) {
+    const listaCita = await Cita.find().populate(
+      "abogado",
+      "nombre apellido role"
+    );
+    const citaTransformada = listaCita.map((cita) => ({
+      ...cita._doc,
+      fecha: cita.fecha.toISOString().split("T")[0],
+    }));
+    res.status(200).json(citaTransformada);
+  }catch(error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al obtener las citas" });
   }
@@ -27,7 +34,10 @@ export const listarCita = async (req, res) => {
 
 export const listarCitaId = async (req, res) => {
   try {
-    const listarCitaId = await Cita.findById(req.params.id);
+    const listarCitaId = await Cita.findById(req.params.id).populate(
+      "abogado",
+      "nombre apellido role"
+    );
     if (!listarCitaId) {
       return res.status(404).json({ mensaje: "La cita con ese ID no existe" });
     }

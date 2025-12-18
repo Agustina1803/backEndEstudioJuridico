@@ -27,7 +27,9 @@ export const crearUsuario = async (req, res) => {
 //GET
 export const obtenerUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.find();
+    const {role} = req.query;
+    const filtro = role ? { role } : {};
+    const usuarios = await Usuario.find(filtro);
     res.status(200).json(usuarios);
   } catch (error) {
     console.log(error);
