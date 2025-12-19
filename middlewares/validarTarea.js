@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import resultadoValidacion from "./resultadoValidacion.js";
 import Usuario from "../models/usuario.js";
-import Tarea from "../models/tarea.js"
+import Tarea from "../models/tarea.js";
 import mongoose from "mongoose";
 
 const validacionTarea = [
@@ -28,12 +28,12 @@ const validacionTarea = [
     .withMessage("La fecha de la tarea es obligatoria")
     .custom((valor) => {
       const fecha = new Date(valor);
-      const day = fecha.getDay();
-      if (day < 1 || day > 5) {
-        throw new Error(`El dia ${fecha.toDateString()} no es un dia habil`);
+      if (isNaN(fecha)) {
+        throw new Error("La fecha no es válida");
       }
       return true;
     }),
+  ,
   body("prioridad")
     .notEmpty()
     .withMessage("La prioridad de la tarea es obligatoria")
@@ -41,14 +41,7 @@ const validacionTarea = [
   body("estado")
     .notEmpty()
     .withMessage("El estado de la tarea es obligatoria")
-    .isIn(["Pendiente", "Proceso", "Completada", "Cancelada", "Reprogramada"]),
-  body("descripcion")
-    .notEmpty()
-    .withMessage("La descripción de la tarea es obligatoria")
-    .isLength({ min: 10, max: 1000 })
-    .withMessage(
-      "La descipcion de la tarea debe tener como minimo 10 y como maximo 1000 caracteres"
-    )
+    .isIn(["Pendiente", "Proceso", "Completada", "Cancelada", "Reprogramada"])
     .custom(async (valor, { req }) => {
       const { abogado, fecha, prioridad, estado } = req.body;
       const tareaExistente = await Tarea.findOne({
@@ -57,6 +50,7 @@ const validacionTarea = [
         fecha,
         prioridad,
         estado,
+        _id: { $ne: req.params.id },
       });
       if (tareaExistente) {
         throw new Error("Ya existe una tarea con los mismos datos");
