@@ -4,7 +4,7 @@ const verficarJWT = (req, res, next) =>{
     try{
         const token = req.headers["x-token"];
         if(!token){
-            return res.status(401).json({mensaje:"No se envio un token"})
+            return res.status(401).json({message:"No se envio un token"})
         }
         const payload = jwt.verify(token, process.env.SECRET_JWT);
         req.email = payload.email;
@@ -12,8 +12,8 @@ const verficarJWT = (req, res, next) =>{
         
         next();
     }catch(error){
-        console.error(error.mensaje);
-        res.status(401).json({mensaje:"Error al verificar el token"})
+        console.error(error);
+        res.status(401).json({message:"Error al verificar el token"})
     }
 }
 

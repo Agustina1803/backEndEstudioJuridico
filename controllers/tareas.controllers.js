@@ -2,6 +2,14 @@ import Tarea from "../models/tarea.js";
 
 export const crearTarea = async (req, res) => {
   try {
+    if (req.body.fecha) {
+      const fecha = new Date(req.body.fecha);
+      if (!isNaN(fecha)) {
+        req.body.fecha = fecha.toISOString();
+      } else {
+        return res.status(400).json({ mensaje: "Fecha inválida" });
+      }
+    }
     const tareaNueva = new Tarea(req.body);
     await tareaNueva.save();
     const tareaGuardada = await Tarea.findById(tareaNueva._id).populate(
@@ -9,6 +17,7 @@ export const crearTarea = async (req, res) => {
       "nombre apellido role"
     );
     res.status(201).json(tareaGuardada);
+    console.log("Body recibido en POST:", req.body);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Erorr en el servidor al crear la tarea" });
@@ -94,6 +103,14 @@ export const borrarTareaPorID = async (req, res) => {
 
 export const actualizarTareaPorID = async (req, res) => {
   try {
+    if (req.body.fecha) {
+      const fecha = new Date(req.body.fecha);
+      if (!isNaN(fecha)) {
+        req.body.fecha = fecha.toISOString();
+      } else {
+        return res.status(400).json({ mensaje: "Fecha inválida" });
+      }
+    }
     const tareaActualizada = await Tarea.findByIdAndUpdate(
       req.params.id,
       req.body,

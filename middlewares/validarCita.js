@@ -74,6 +74,7 @@ const validacionCita = [
             abogado: valor,
             fecha: req.body.fecha,
             hora: req.body.hora,
+            _id: { $ne: req.params.id }
         });
 
         if(existe){
