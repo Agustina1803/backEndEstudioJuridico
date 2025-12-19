@@ -27,9 +27,10 @@ export const listarCita = async (req, res) => {
     }
 
     if (fecha) {
-      filtro.fecha = new Date(fecha);
+      const fechaInicio = new Date(`${fecha}T00:00:00`);
+      const fechaFin = new Date(`${fecha}T23:59:59`);
+      filtro.fecha = { $gte: fechaInicio, $lte: fechaFin };
     }
-
     const listaCita = await Cita.find(filtro).populate(
       "abogado",
       "nombre apellido role"
