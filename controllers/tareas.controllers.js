@@ -2,9 +2,9 @@ import Tarea from "../models/tarea.js";
 
 export const crearTarea = async (req, res) => {
   try {
-    const crearTareas = new Tarea(req.body);
-    await crearTareas.save();
-    const tareaGuardada = await Tarea.findById(crearTareas._id).populate(
+    const tareaNueva = new Tarea(req.body);
+    await tareaNueva.save();
+    const tareaGuardada = await Tarea.findById(tareaNueva._id).populate(
       "abogado",
       "nombre apellido role"
     );
@@ -21,7 +21,7 @@ export const listarTarea = async (req, res) => {
     const filtro = {};
 
     if (estado) {
-      filtro.estado = { $regex: estado, $options: "i" };
+      filtro.estado = estado;
     }
 
     if (fecha) {
@@ -30,21 +30,21 @@ export const listarTarea = async (req, res) => {
       filtro.fecha = { $gte: fechaInicio, $lte: fechaFin };
     }
 
-    const listaDeTarea = await Tarea.find().populate(
+    const listaTarea = await Tarea.find(filtro).populate(
       "abogado",
       "nombre apellido role"
     );
-    const tareaTransformada = listaDeTarea.map((tarea) => ({
+    const tareaTransformada = listaTarea.map((tarea) => ({
       _id: tarea._id,
       fecha: tarea.fecha.toISOString().split("T")[0],
       descripcion: tarea.descripcion,
       prioridad: tarea.prioridad,
       estado: tarea.estado,
       abogado: {
-        _id: cita.abogado?._id,
-        nombre: cita.abogado?.nombre,
-        apellido: cita.abogado?.apellido,
-        role: cita.abogado?.role,
+        _id: tarea.abogado?._id,
+        nombre: tarea.abogado?.nombre,
+        apellido: tarea.abogado?.apellido,
+        role: tarea.abogado?.role,
       },
     }));
     res.status(200).json(tareaTransformada);
@@ -98,15 +98,13 @@ export const actualizarTareaPorID = async (req, res) => {
       req.params.id,
       req.body,
       { new: true }
-    );
+    ).populate("abogado", "nombre apellido role");
     if (!tareaActualizada) {
       return res
         .status(404)
         .json({ mensaje: "Tarea no encontrada por ese ID" });
     }
-    res.status(200).json({
-      mensaje: "Tarea actualizada exitosamente",
-    });
+    res.status(200).json(tareaActualizada);
   } catch (error) {
     console.error(error);
     res.status(500).json({
