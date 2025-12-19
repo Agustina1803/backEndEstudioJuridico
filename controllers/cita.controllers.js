@@ -4,9 +4,11 @@ export const crearCita = async (req, res) => {
   try {
     const citaNueva = new Cita(req.body);
     await citaNueva.save();
-    res.status(201).json({
-      mensaje: "Cita creada exitosamente",
-    });
+    const citaGuardada = await Cita.findById(citaNueva._id).populate(
+      "abogado",
+      "nombre apellido role"
+    );
+    res.status(201).json(citaGuardada);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -17,17 +19,30 @@ export const crearCita = async (req, res) => {
 
 export const listarCita = async (req, res) => {
   try {
-    const listaCita = await Cita.find().populate(
+    const { cliente, fecha } = req.query;
+    const filtro = {};
+
+    if (cliente) {
+      filtro.cliente = { $regex: cliente, $options: "i" };
+    }
+
+    if (fecha) {
+      filtro.fecha = new Date(fecha);
+    }
+
+    const listaCita = await Cita.find(filtro).populate(
       "abogado",
       "nombre apellido role"
     );
+
     const citaTransformada = listaCita.map((cita) => ({
       ...cita._doc,
       fecha: cita.fecha.toISOString().split("T")[0],
     }));
+
     res.status(200).json(citaTransformada);
-  }catch(error) {
-    console.error(error);
+  } catch (error) {
+    console.error("Error en listarCita:", error);
     res.status(500).json({ mensaje: "Error al obtener las citas" });
   }
 };
@@ -65,12 +80,11 @@ export const editarCitaId = async (req, res) => {
   try {
     const citaEditada = await Cita.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true,
-    });
+    }).populate("abogado", "nombre apellido role");
     if (!citaEditada) {
       return res.status(404).json({ mensaje: "La cita con ese ID no existe" });
     }
-    res.status(200).json({ mensaje: "Cita editada con éxito" });
+    res.status(200).json(citaEditada);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Erorr al actualizar la cita por ID" });
