@@ -37,8 +37,18 @@ export const listarCita = async (req, res) => {
     );
 
     const citaTransformada = listaCita.map((cita) => ({
-      ...cita._doc,
+      _id: cita._id,
       fecha: cita.fecha.toISOString().split("T")[0],
+      hora: cita.hora,
+      cliente: cita.cliente,
+      tipoEvento: cita.tipoEvento,
+      notas: cita.notas,
+      abogado: {
+        _id: cita.abogado?._id,
+        nombre: cita.abogado?.nombre,
+        apellido: cita.abogado?.apellido,
+        role: cita.abogado?.role,
+      },
     }));
 
     res.status(200).json(citaTransformada);
