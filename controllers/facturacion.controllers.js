@@ -5,14 +5,14 @@ import fs from "fs";
 //POST
 export const crearFacturacion = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({ mensaje: "Debe subir un archivo" });
+    }
     const resultado = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "image",
+      resource_type: "auto",
       folder: "facturas_pdf",
-      pages: true,
     });
-
     fs.unlinkSync(req.file.path);
-
     const facturacionNuevo = new Facturacion({
       fecha: req.body.fecha,
       nombreCliente: req.body.nombreCliente,
@@ -20,25 +20,25 @@ export const crearFacturacion = async (req, res) => {
       seleccionarArchivo: {
         url: resultado.secure_url,
         public_id: resultado.public_id,
+        nombre: req.file.originalname,
       },
       monto: req.body.monto,
       estado: req.body.estado,
     });
-
     await facturacionNuevo.save();
-    console.info(req.body);
-    res.status(201).json({
-      mensaje: "Facturacion fue subida con exito",
-      archivo: facturacionNuevo,
-    });
+    res
+      .status(201)
+      .json({
+        mensaje: "Facturación fue subida con éxito",
+        archivo: facturacionNuevo,
+      });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      mensaje: "Error en el servidor al crear facturacion",
-    });
+    console.error(error);
+    res
+      .status(500)
+      .json({ mensaje: "Error en el servidor al crear facturación" });
   }
 };
-
 //get
 export const listaFacturacion = async (req, res) => {
   try {
@@ -111,7 +111,7 @@ export const eliminarFacturacion = async (req, res) => {
     await cloudinary.uploader.destroy(
       facturacionBorrado.seleccionarArchivo.public_id,
       {
-        resource_type: "image",
+        resource_type: "auto",
       }
     );
     res.status(200).json({
@@ -128,24 +128,42 @@ export const eliminarFacturacion = async (req, res) => {
 
 export const editarFacturacion = async (req, res) => {
   try {
+    let updateData = { ...req.body };
+    if (!req.file) {
+      const facturaActual = await Facturacion.findById(req.params.id);
+      if (!facturaActual) {
+        return res.status(404).json({ mensaje: "Factura no encontrada" });
+      }
+      updateData.seleccionarArchivo = facturaActual.seleccionarArchivo;
+    } else {
+      const resultado = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "auto",
+        folder: "facturas_pdf",
+      });
+      fs.unlinkSync(req.file.path);
+      updateData.seleccionarArchivo = {
+        url: resultado.secure_url,
+        public_id: resultado.public_id,
+        nombre: req.file.originalname,
+      };
+    }
     const facturacionEditado = await Facturacion.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
     if (!facturacionEditado) {
-      return res.status(400).json({
-        mensaje: "La facturacion con ese ID no existe",
-      });
+      return res
+        .status(400)
+        .json({ mensaje: "La facturación con ese ID no existe" });
     }
     res.status(200).json({
-      mensaje: "Facturacion actualizada con exito",
+      mensaje: "Facturación actualizada con éxito",
+      factura: facturacionEditado,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      mensaje: "Error al actualizar factura por ID",
-    });
+    res.status(500).json({ mensaje: "Error al actualizar factura por ID" });
   }
 };
 

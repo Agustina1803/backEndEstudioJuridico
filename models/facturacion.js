@@ -31,6 +31,7 @@ const facturacionSchema = new mongoose.Schema({
   seleccionarArchivo: {
     url: { type: String, required: true },
     public_id: { type: String, required: true },
+    nombre: { type: String, required: true },
   },
   monto: {
     type: Number,
