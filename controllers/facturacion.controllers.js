@@ -12,10 +12,21 @@ export const crearFacturacion = async (req, res) => {
     });
 
     fs.unlinkSync(req.file.path);
+
+    const facturacionNuevo = new Facturacion({
+      fecha: req.body.fecha,
+      nombreCliente: req.body.nombreCliente,
+      concepto: req.body.concepto,
+      seleccionarArchivo: {
+        url: resultado.secure_url,
+        public_id: resultado.public_id,
+      },
+      monto: req.body.monto,
+      estado: req.body.estado,
+    });
     
-    const facturacionNuevo = new Facturacion(req.body);
     await facturacionNuevo.save();
-    console.log(req.body);
+    console.info(req.body);
     res.status(201).json({
       mensaje: "Facturacion fue creado con exito",
     });
@@ -69,6 +80,12 @@ export const eliminarFacturacion = async (req, res) => {
         mensaje: "La factura con ese ID no existe",
       });
     }
+     await cloudinary.uploader.destroy(
+          ArchivoBorrado.seleccionarArchivo.public_id,
+          {
+            resource_type: "image",
+          }
+        );
     res.status(200).json({
       mensaje: "La factura fue eliminada con exito",
     });

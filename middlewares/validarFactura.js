@@ -25,10 +25,6 @@ const validarFactura = [
     .isLength({ min: 15, max: 50 })
     .withMessage("El concepto debe tener entre 15 a 50 caracteres "),
 
-  body("seleccionarArchivo")
-    .notEmpty()
-    .withMessage("El archivo es obligatorio"),
-
   body("monto")
     .notEmpty()
     .withMessage("El monto es obligatorio")
@@ -42,6 +38,7 @@ const validarFactura = [
     .notEmpty()
     .withMessage("El estado es obligatorio")
     .isIn(["Pendiente", "Pagado", "Anulada"]),
+
   (req, res, next) => resultadoValidacion(req, res, next),
 ];
 export default validarFactura;

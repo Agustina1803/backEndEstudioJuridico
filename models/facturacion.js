@@ -27,6 +27,7 @@ const facturacionSchema = new mongoose.Schema({
     maxLength: 50,
     minLength: 15,
   },
+  
   seleccionarArchivo: {
     url: { type: String, required: true },
     public_id: { type: String, required: true },
