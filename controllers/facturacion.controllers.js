@@ -7,7 +7,7 @@ export const crearFacturacion = async (req, res) => {
   try {
     const resultado = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "image",
-      folder: "factura_pdf",
+      folder: "facturas_pdf",
       pages: true,
     });
 
