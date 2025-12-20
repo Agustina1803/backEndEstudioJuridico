@@ -24,11 +24,12 @@ export const crearFacturacion = async (req, res) => {
       monto: req.body.monto,
       estado: req.body.estado,
     });
-    
+
     await facturacionNuevo.save();
     console.info(req.body);
     res.status(201).json({
-      mensaje: "Facturacion fue creado con exito",
+      mensaje: "Facturacion fue subida con exito",
+      archivo: facturacionNuevo,
     });
   } catch (error) {
     console.log(error);
@@ -80,12 +81,12 @@ export const eliminarFacturacion = async (req, res) => {
         mensaje: "La factura con ese ID no existe",
       });
     }
-     await cloudinary.uploader.destroy(
-          ArchivoBorrado.seleccionarArchivo.public_id,
-          {
-            resource_type: "image",
-          }
-        );
+    await cloudinary.uploader.destroy(
+      facturacionBorrado.seleccionarArchivo.public_id,
+      {
+        resource_type: "image",
+      }
+    );
     res.status(200).json({
       mensaje: "La factura fue eliminada con exito",
     });
@@ -118,5 +119,21 @@ export const editarFacturacion = async (req, res) => {
     res.status(500).json({
       mensaje: "Error al actualizar factura por ID",
     });
+  }
+};
+
+export const descargarFacturacion = async (req, res) => {
+  try {
+    const factura = await Facturacion.findById(req.params.id);
+    if (!factura) {
+      return res
+        .status(404)
+        .json({ mensaje: "La factura con ese ID no existe" });
+    }
+    const urlDescarga = factura.seleccionarArchivo.url + "?fl_attachment";
+    res.redirect(urlDescarga);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al descargar la factura" });
   }
 };
