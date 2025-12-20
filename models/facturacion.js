@@ -1,50 +1,47 @@
 import mongoose from "mongoose";
 
 const facturacionSchema = new mongoose.Schema({
-
-    fecha:{
+  fecha: {
     type: Date,
     required: true,
     validate: {
-    validator: function(value) {
-      const day = value.getDay(); 
-      return day >= 1 && day <= 5;
+      validator: function (value) {
+        const day = value.getDay();
+        return day >= 1 && day <= 5;
+      },
+      message: (props) =>
+        `El día ${props.value.toDateString()} no es válido para agendar eventos`,
     },
-    message: props => `El día ${props.value.toDateString()} no es válido para agendar eventos`}
-},
+  },
 
- nombreCliente:{
+  nombreCliente: {
     type: String,
     required: true,
     maxLength: 30,
     minLength: 10,
- },
+  },
 
- concepto:{
+  concepto: {
     type: String,
     required: true,
     maxLength: 50,
     minLength: 15,
- },
-seleccionarArchivo:{
-    type: String,
-    required: true,
-},
-    monto:{
+  },
+  seleccionarArchivo: {
+    url: { type: String, required: true },
+    public_id: { type: String, required: true },
+  },
+  monto: {
     type: Number,
     required: true,
     min: 1,
-},
-estado:{
+  },
+  estado: {
     type: String,
     required: true,
-    enum: ["Pendiente", "Pagada", "Anulada"]
-}
+    enum: ["Pendiente", "Pagada", "Anulada"],
+  },
+});
 
-
-
-})
-
-
-const Facturacion = mongoose.model('facturacion', facturacionSchema);
+const Facturacion = mongoose.model("facturacion", facturacionSchema);
 export default Facturacion;
