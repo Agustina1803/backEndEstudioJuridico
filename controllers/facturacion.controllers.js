@@ -26,12 +26,10 @@ export const crearFacturacion = async (req, res) => {
       estado: req.body.estado,
     });
     await facturacionNuevo.save();
-    res
-      .status(201)
-      .json({
-        mensaje: "Facturación fue subida con éxito",
-        archivo: facturacionNuevo,
-      });
+    res.status(201).json({
+      mensaje: "Facturación fue subida con éxito",
+      archivo: facturacionNuevo,
+    });
   } catch (error) {
     console.error(error);
     res
@@ -128,14 +126,12 @@ export const eliminarFacturacion = async (req, res) => {
 
 export const editarFacturacion = async (req, res) => {
   try {
+    const facturaActual = await Facturacion.findById(req.params.id);
+    if (!facturaActual) {
+      return res.status(404).json({ mensaje: "Factura no encontrada" });
+    }
     let updateData = { ...req.body };
-    if (!req.file) {
-      const facturaActual = await Facturacion.findById(req.params.id);
-      if (!facturaActual) {
-        return res.status(404).json({ mensaje: "Factura no encontrada" });
-      }
-      updateData.seleccionarArchivo = facturaActual.seleccionarArchivo;
-    } else {
+    if (req.file) {
       const resultado = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "auto",
         folder: "facturas_pdf",
@@ -150,20 +146,22 @@ export const editarFacturacion = async (req, res) => {
     const facturacionEditado = await Facturacion.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true }
+      { new: true, runValidators: true }
     );
-    if (!facturacionEditado) {
-      return res
-        .status(400)
-        .json({ mensaje: "La facturación con ese ID no existe" });
-    }
-    res.status(200).json({
-      mensaje: "Facturación actualizada con éxito",
-      factura: facturacionEditado,
-    });
+    res
+      .status(200)
+      .json({
+        mensaje: "Facturación actualizada con éxito",
+        factura: facturacionEditado,
+      });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ mensaje: "Error al actualizar factura por ID" });
+    console.error(
+      "Error al actualizar:",);
+    res
+      .status(400)
+      .json({
+        mensaje: "Error al actualizar factura",
+      });
   }
 };
 
