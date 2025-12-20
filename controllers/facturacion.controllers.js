@@ -40,17 +40,14 @@ export const crearFacturacion = async (req, res) => {
 //get
 export const listaFacturacion = async (req, res) => {
   try {
-    const { nombreCliente, monto, estado, fecha } = req.query;
+    const { nombreCliente,  estado, fecha } = req.query;
     const filtro = {};
 
     if (nombreCliente) {
       filtro.nombreCliente = { $regex: nombreCliente, $options: "i" };
     }
-    if (monto) {
-      filtro.monto = monto;
-    }
     if (estado) {
-      filtro.estado = estado;
+      filtro.estado = { $regex: `^${estado}$`, $options: "i" };
     }
     if (fecha) {
       const fechaInicio = new Date(`${fecha}T00:00:00`);
