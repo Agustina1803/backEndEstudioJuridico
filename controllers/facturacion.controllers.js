@@ -42,8 +42,35 @@ export const crearFacturacion = async (req, res) => {
 //get
 export const listaFacturacion = async (req, res) => {
   try {
-    const listaFacturas = await Facturacion.find();
-    res.status(200).json(listaFacturas);
+    const { nombreCliente, monto, estado, fecha } = req.query;
+    const filtro = {};
+
+    if (nombreCliente) {
+      filtro.nombreCliente = { $regex: nombreCliente, $options: "i" };
+    }
+    if (monto) {
+      filtro.monto = monto;
+    }
+    if (estado) {
+      filtro.estado = estado;
+    }
+    if (fecha) {
+      const fechaInicio = new Date(`${fecha}T00:00:00`);
+      const fechaFin = new Date(`${fecha}T23:59:59`);
+      filtro.fecha = { $gte: fechaInicio, $lte: fechaFin };
+    }
+
+    const listaFacturas = await Facturacion.find(filtro);
+    const facturaTransformada = listaFacturas.map((factura) => ({
+      _id: factura._id,
+      fecha: factura.fecha.toISOString().split("T")[0],
+      nombreCliente: factura.nombreCliente,
+      concepto: factura.concepto,
+      seleccionarArchivo: factura.seleccionarArchivo,
+      monto: factura.monto,
+      estado: factura.estado,
+    }));
+    res.status(200).json(facturaTransformada);
   } catch (error) {
     console.log(error);
     res.status(500).json({
