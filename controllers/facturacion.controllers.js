@@ -123,7 +123,7 @@ export const eliminarFacturacion = async (req, res) => {
 
 export const editarFacturacion = async (req, res) => {
   try {
-    const facturaActual = await Facturacion.findById(req.params.id);
+    const facturaActual = await Facturacion.findByIdAndUpdate(req.params.id);
     if (!facturaActual) {
       return res.status(404).json({ mensaje: "Factura no encontrada" });
     }
