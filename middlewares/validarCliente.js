@@ -6,7 +6,7 @@ const validacionCliente = [
   body("nombre")
     .notEmpty()
     .withMessage("El nombre del cliente es obligatorio")
-    .isLength({ min: 10, max: 30 }),
+    .isLength({ min: 4, max: 30 }),
   body("identificador")
     .notEmpty()
     .withMessage("El dni o cuil del cliente es obligatorio")
@@ -59,7 +59,7 @@ const validacionCliente = [
         if(!existeEmail){
             return true
         }
-        if(req.params.id && req.params.is.toString() === existeEmail._id.toString()){
+        if(req.params.id && req.params.id.toString() === existeEmail._id.toString()){
             return true
         } 
         throw new Error ("Ya existe un cliente registrado con ese email, no pueden ser duplicados")
