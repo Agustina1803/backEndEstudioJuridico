@@ -41,15 +41,7 @@ const validacionJuicio = [
             }
             return true;
         }),
-    body("seleccionarArchivo")
-        .notEmpty()
-        .withMessage("El archivo es obligatorio"),
-/* 
-    body("role")
-        .notEmpty()
-        .withMessage("EL rol del usuario es obligatorio")
-        .isIn(["abog"]),
- */
+
     (req, res, next) => resultadoValidacion(req, res, next),
 ];
 

@@ -20,7 +20,6 @@ const juicioSchema = new Schema({
     numeroExpediente: {
         type: String,
         required: [true, "El Número de expediente es obligatorio"],
-        match: [/^\d+$/, "El número de expediente no es válido"],
     },
 
     juzgado: {
@@ -42,10 +41,11 @@ const juicioSchema = new Schema({
         }
     },
 
-    seleccionarArchivo: {
-        type: String,
-        required: [true, "El archivo es obligatorio"],
-    },
+  seleccionarArchivo: {
+    url: { type: String },
+    public_id: { type: String},
+    nombre: { type: String},
+  },
 });
 
 const Juicio = mongoose.model("juicio", juicioSchema);
