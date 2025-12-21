@@ -27,8 +27,17 @@ export const crearUsuario = async (req, res) => {
 //GET
 export const obtenerUsuarios = async (req, res) => {
   try {
-    const {role} = req.query;
-    const filtro = role ? { role } : {};
+    const { role, search } = req.query;
+    const filtro = {};
+    if (role) {
+      filtro.role = role;
+    }
+    if (search) {
+      filtro.$or = [
+        { nombre: { $regex: search, $options: "i" } },
+        { apellido: { $regex: search, $options: "i" } },
+      ];
+    }
     const usuarios = await Usuario.find(filtro);
     res.status(200).json(usuarios);
   } catch (error) {
@@ -81,9 +90,20 @@ export const eliminarUsuario = async (req, res) => {
 
 export const actualizarUsuario = async (req, res) => {
   try {
+    const datosActualizados = { ...req.body };
+
+    if (datosActualizados.formBasicPassword) {
+      const saltos = bcrypt.genSaltSync(10);
+      datosActualizados.formBasicPassword = bcrypt.hashSync(
+        datosActualizados.formBasicPassword,
+        saltos
+      );
+    }else{
+      delete datosActualizados.formBasicPassword;
+    }
     const usuarioActualizado = await Usuario.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      datosActualizados,
       { new: true }
     );
     if (!usuarioActualizado) {
@@ -119,7 +139,7 @@ export const login = async (req, res) => {
       return res.status(401).send("Credenciales incorrectas");
     }
     const token = await generarJWT(usuarioBuscado, passwordCorrecto);
-    console.log(usuarioBuscado)
+    console.log(usuarioBuscado);
     res.status(200).json({
       mensaje: "Logeo exitoso",
       token: token,
@@ -127,7 +147,7 @@ export const login = async (req, res) => {
       role: usuarioBuscado.role,
     });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).send("Error en el login del usuario");
   }
 };

@@ -43,6 +43,7 @@ const validacionUsuario = [
     .isLength({ min: 7, max: 15 })
     .withMessage("El teléfono debe tener entre 7 y 15 dígitos"),
   body("formBasicPassword")
+    .if((value, { req }) => req.method === "POST")
     .notEmpty()
     .withMessage("La contraseña del usuario es obligatoria")
     .matches(
