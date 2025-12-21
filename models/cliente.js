@@ -10,7 +10,7 @@ const clienteSchema = new Schema({
   identificador: {
     type: String,
     required: true,
-    match: /^\d{7,11}$/,
+  
   },
   email:{
     type:String,
@@ -24,8 +24,7 @@ const clienteSchema = new Schema({
  telefono: {
   type: String,
   required: true,
-  match: /^\d+$/, 
-  trim: true,
+
 },
 estadoCliente:{
     type:String,
