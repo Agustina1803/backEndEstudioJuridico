@@ -8,18 +8,21 @@ const subirArchivoSchema = new Schema({
     enum: ["demanda", "contrato", "escrito", "poder", "notificacion"],
   },
   fecha: {
-    type: String,
+    type: Date,
     required: true,
     validate: {
       validator: function (value) {
-        return /^\d{4}-\d{2}-\d{2}$/.test(value);
+        const day = value.getDay();
+        return day >= 1 && day <= 5;
       },
+      message: (props) =>
+        `El día ${props.value.toDateString()} no es válido para agendar eventos`,
     },
   },
-
   seleccionarArchivo: {
-    url: { type: String, required: true },
-    public_id: { type: String, required: true },
+    url: { type: String },
+    public_id: { type: String },
+    nombre: { type: String },
   },
 });
 
