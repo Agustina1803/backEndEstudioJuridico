@@ -16,6 +16,7 @@ API rest para gestionar  **citas, juicios, clientes, documentos, tareas, registr
 1.Clonar este repositorio escribiendo en una terminal el siguiente comando git clone https://github.com/Agustina1803/backEndEstudioJuridico.git
 
 ## Autores
-Bulacio Agustina 👩🏻‍💻
-Varela Daiana 👩🏻‍💻
-Coronel Adrian 👨🏻‍💻
+- Bulacio Agustina 👩🏻‍💻
+- Varela Daiana 👩🏻‍💻
+- Coronel Adrian 👨🏻‍💻
+
