@@ -6,7 +6,7 @@ import verficarJWT from "../middlewares/verificarJWT.js";
 import multer from "multer";
 
 const router = Router();
-const upload = multer({dest:"uploads/"});
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.route("/").post([verficarJWT,upload.single("seleccionarArchivo"),validarFactura],crearFacturacion).get(listaFacturacion);
 router.route("/:id").get(validarId,obtenerFacturacionPorId).delete([verficarJWT,validarId],eliminarFacturacion).put([verficarJWT,validarId,upload.single("seleccionarArchivo"),validarFactura],editarFacturacion);

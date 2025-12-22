@@ -6,7 +6,7 @@ import verficarJWT from "../middlewares/verificarJWT.js";
 import multer from "multer";
 
 const router = Router();
-const upload = multer({dest:"uploads/"});
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.route("/").post([verficarJWT,upload.single("seleccionarArchivo"),validarSubirArchivo], crearSubirArchivo).get(listaSubirArchivo);
 router.route("/:id").get(validarIds, obtenerSubirArchivoPorId).delete([verficarJWT,validarIds], eliminarSubirArchivo).put([verficarJWT,upload.single("seleccionarArchivo"),validarIds, validarSubirArchivo], editarSubirArchivo);

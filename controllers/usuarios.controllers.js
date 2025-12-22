@@ -124,6 +124,7 @@ export const actualizarUsuario = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
+    console.log("Body recibido en login:", req.body);
     const { email, formBasicPassword } = req.body;
     const usuarioBuscado = await Usuario.findOne({
       email: email,

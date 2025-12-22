@@ -8,13 +8,10 @@ export const crearSubirArchivo = async (req, res) => {
      if (!req.file) {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
-    const resultado = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "image",
+    const resultado = await cloudinary.uploader.upload(req.file.buffer, {
+      resource_type: "auto",
       folder: "archivos_pdf",
-      pages: true,
     });
-
-    fs.unlinkSync(req.file.path);
 
     const archivoNuevo = new SubirArchivo({
       nombreCliente: req.body.nombreCliente,
@@ -109,7 +106,7 @@ export const eliminarSubirArchivo = async (req, res) => {
     await cloudinary.uploader.destroy(
       ArchivoBorrado.seleccionarArchivo.public_id,
       {
-        resource_type: "image",
+        resource_type: "raw",
       }
     );
 
@@ -138,18 +135,15 @@ export const editarSubirArchivo = async (req, res) => {
     let updateData = req.body;
 
     if (req.file) {
-      const resultado = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: "image",
+      const resultado = await cloudinary.uploader.upload(req.file.buffer, {
+        resource_type: "auto",
         folder: "archivos_pdf",
-        pages: true,
       });
-
-      fs.unlinkSync(req.file.path);
 
       
       if (archivoExistente.seleccionarArchivo && archivoExistente.seleccionarArchivo.public_id) {
         await cloudinary.uploader.destroy(archivoExistente.seleccionarArchivo.public_id, {
-          resource_type: "image",
+          resource_type: "raw",
         });
       }
       updateData.seleccionarArchivo = {
