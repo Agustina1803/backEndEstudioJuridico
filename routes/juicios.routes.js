@@ -11,6 +11,6 @@ const upload = multer({dest:"uploads/"});
 // Importar los controladores
 
 router.route('/').get(obtenerJuicio).post([verficarJWT,upload.single("seleccionarArchivo"), validacionJuicio],crearJuicio);
-router.route('/:id').get(validarId,obtenerJuicioPorId).delete([verficarJWT, validarId],eliminarJuicio).put([verficarJWT,validarId, validacionJuicio], actualizarJuicio);
-router.get("/:id/descargar", validarId, descargarJuicio)
+router.route('/:id').get(validarId,obtenerJuicioPorId).delete([verficarJWT, validarId],eliminarJuicio).put([verficarJWT,validarId, upload.single("seleccionarArchivo"), validacionJuicio], actualizarJuicio);
+router.get("/:id/descargar", [verficarJWT, validarId], descargarJuicio)
 export default router;

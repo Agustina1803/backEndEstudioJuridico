@@ -11,6 +11,7 @@ export const crearFacturacion = async (req, res) => {
     const resultado = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "auto",
       folder: "facturas_pdf",
+      access_mode: "public",
     });
     fs.unlinkSync(req.file.path);
     const facturacionNuevo = new Facturacion({
@@ -26,9 +27,13 @@ export const crearFacturacion = async (req, res) => {
       estado: req.body.estado,
     });
     await facturacionNuevo.save();
+    const facturaFormateada ={
+      ...facturacionNuevo.toObject(),
+      fecha: facturacionNuevo.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+    };
     res.status(201).json({
       mensaje: "Facturación fue subida con éxito",
-      archivo: facturacionNuevo,
+      archivo: facturaFormateada,
     });
   } catch (error) {
     console.error(error);
@@ -57,13 +62,8 @@ export const listaFacturacion = async (req, res) => {
 
     const listaFacturas = await Facturacion.find(filtro);
     const facturaTransformada = listaFacturas.map((factura) => ({
-      _id: factura._id,
-      fecha: factura.fecha.toISOString().split("T")[0],
-      nombreCliente: factura.nombreCliente,
-      concepto: factura.concepto,
-      seleccionarArchivo: factura.seleccionarArchivo,
-      monto: factura.monto,
-      estado: factura.estado,
+     ...factura.toObject()  
+     , fecha: factura.fecha.toISOString().split('T')[0].replace(/-/g, '/')
     }));
     res.status(200).json(facturaTransformada);
   } catch (error) {
@@ -83,7 +83,11 @@ export const obtenerFacturacionPorId = async (req, res) => {
         mensaje: "La facturacion con ese ID no existe",
       });
     }
-    res.status(200).json(obtenerFacturacionPorId);
+    const facturaFormateada = {
+      ...obtenerFacturacionPorId.toObject(),
+      fecha: obtenerFacturacionPorId.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+    };
+    res.status(200).json(facturaFormateada);
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -106,7 +110,7 @@ export const eliminarFacturacion = async (req, res) => {
     await cloudinary.uploader.destroy(
       facturacionBorrado.seleccionarArchivo.public_id,
       {
-        resource_type: "auto",
+        resource_type: "raw",
       }
     );
     res.status(200).json({
@@ -123,17 +127,28 @@ export const eliminarFacturacion = async (req, res) => {
 
 export const editarFacturacion = async (req, res) => {
   try {
-    const facturaActual = await Facturacion.findByIdAndUpdate(req.params.id);
+    const facturaActual = await Facturacion.findById(req.params.id);
     if (!facturaActual) {
       return res.status(404).json({ mensaje: "Factura no encontrada" });
     }
-    let updateData = { ...req.body };
+    let updateData = req.body;
     if (req.file) {
-      const resultado = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: "auto",
-        folder: "facturas_pdf",
-      });
+    const resultado = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "auto",
+      folder: "facturas_pdf",
+    });
       fs.unlinkSync(req.file.path);
+      if (
+        facturaActual.seleccionarArchivo &&
+        facturaActual.seleccionarArchivo.public_id
+      ) {
+        await cloudinary.uploader.destroy(
+          facturaActual.seleccionarArchivo.public_id,
+          {
+            resource_type: "raw",
+          }
+        );
+      }
       updateData.seleccionarArchivo = {
         url: resultado.secure_url,
         public_id: resultado.public_id,
@@ -143,8 +158,15 @@ export const editarFacturacion = async (req, res) => {
     const facturacionEditado = await Facturacion.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true, runValidators: true }
+      { new: true }
     );
+    const archivoFormateado = {
+      ...facturacionEditado.toObject(),
+      fecha: facturacionEditado.fecha
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "/"),
+    };
     res
       .status(200)
       .json({

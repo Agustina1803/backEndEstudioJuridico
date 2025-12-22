@@ -27,7 +27,6 @@ export const crearSubirArchivo = async (req, res) => {
       },
     });
     await archivoNuevo.save();
-    console.info(req.body);
     const archivoFormateado = {
       ...archivoNuevo.toObject(),
       fecha: archivoNuevo.fecha.toISOString().split('T')[0].replace(/-/g, '/')
@@ -139,7 +138,6 @@ export const editarSubirArchivo = async (req, res) => {
     let updateData = req.body;
 
     if (req.file) {
-      // Si hay un nuevo archivo, subirlo a Cloudinary
       const resultado = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "image",
         folder: "archivos_pdf",
@@ -148,14 +146,12 @@ export const editarSubirArchivo = async (req, res) => {
 
       fs.unlinkSync(req.file.path);
 
-      // Eliminar el archivo anterior de Cloudinary si existe
+      
       if (archivoExistente.seleccionarArchivo && archivoExistente.seleccionarArchivo.public_id) {
         await cloudinary.uploader.destroy(archivoExistente.seleccionarArchivo.public_id, {
           resource_type: "image",
         });
       }
-
-      // Actualizar los datos del archivo
       updateData.seleccionarArchivo = {
         url: resultado.secure_url,
         public_id: resultado.public_id,
@@ -195,8 +191,8 @@ export const descargarSubirArchivo = async (req, res) => {
       });
     }
 
-    // Para archivos en Cloudinary, redirigir a la URL segura
-    res.redirect(archivo.seleccionarArchivo.url);
+  
+    res.redirect(archivo.seleccionarArchivo.url + "?fl_attachment");
   } catch (error) {
     console.log(error);
     res.status(500).json({
