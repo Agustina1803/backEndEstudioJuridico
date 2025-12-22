@@ -37,7 +37,7 @@ const validarFactura = [
   body("estado")
     .notEmpty()
     .withMessage("El estado es obligatorio")
-    .isIn(["Pendiente", "Pagado", "Anulada"]),
+    .isIn(["Pendiente", "Pagada", "Anulada"]),
 
   (req, res, next) => resultadoValidacion(req, res, next),
 ];

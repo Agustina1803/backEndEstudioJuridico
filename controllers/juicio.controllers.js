@@ -33,7 +33,7 @@ export const crearJuicio = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error en el servidor al cargar el nuevo caso",
+      mensaje: "Error en el servidor al cargar el nuevo caso",
     });
   }
 };
@@ -61,7 +61,7 @@ export const obtenerJuicio = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error en el servidor al obtener los juicios",
+      mensaje: "Error en el servidor al obtener los juicios",
     });
   }
 };
@@ -72,14 +72,14 @@ export const obtenerJuicioPorId = async (req, res) => {
     const juicioporID = await Juicio.findById(req.params.id);
     if (!juicioporID) {
       return res.status(404).json({
-        message: "Caso no encontrado",
+        mensaje: "Caso no encontrado",
       });
     }
     res.status(200).json(juicioporID);
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error en el servidor al obtener el Caso por ID",
+      mensaje: "Error en el servidor al obtener el Caso por ID",
     });
   }
 };
@@ -89,7 +89,7 @@ export const eliminarJuicio = async (req, res) => {
     const juicioBorrado = await Juicio.findByIdAndDelete(req.params.id);
     if (!juicioBorrado) {
       return res.status(404).json({
-        message: "Caso no encontrado",
+        mensaje: "Caso no encontrado",
       });
     }
     await cloudinary.uploader.destroy(
@@ -99,12 +99,12 @@ export const eliminarJuicio = async (req, res) => {
       }
     );
     res.status(200).json({
-      message: "Caso eliminado exitosamente",
+      mensaje: "Caso eliminado exitosamente",
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error en el servidor al eliminar el caso",
+      mensaje: "Error en el servidor al eliminar el caso",
     });
   }
 };
@@ -113,30 +113,31 @@ export const eliminarJuicio = async (req, res) => {
 
 export const actualizarJuicio = async (req, res) => {
   try {
-    const juicioActualizado = await Juicio.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!juicioActualizado) {
+    const juicioActual = await Juicio.findById(req.params.id);
+    if (!juicioActual) {
       return res.status(404).json({
-        message: "Caso no encontrado",
+        mensaje: "Caso no encontrado",
       });
     }
-let updateData = { ...req.body };
+    let updateData = req.body;
     if (req.file) {
       const resultado = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "auto",
         folder: "juicios_pdf",
       });
       fs.unlinkSync(req.file.path);
+      if (juicioActual.seleccionarArchivo && juicioActual.seleccionarArchivo.public_id) {
+        await cloudinary.uploader.destroy(juicioActual.seleccionarArchivo.public_id, {
+          resource_type: "raw",
+        });
+      }
       updateData.seleccionarArchivo = {
         url: resultado.secure_url,
         public_id: resultado.public_id,
         nombre: req.file.originalname,
       };
     }
-    const juicioEditado = await juicio.findByIdAndUpdate(
+    const juicioEditado = await Juicio.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true, runValidators: true }
@@ -145,15 +146,15 @@ let updateData = { ...req.body };
       .status(200)
       .json({
         mensaje: "juicio actualizado con éxito",
-        factura: juicioEditado,
+        juicio: juicioEditado,
       });
   } catch (error) {
     console.error(
-      "Error al actualizar:",);
+      "Error al actualizar:", error);
     res
       .status(400)
       .json({
-        mensaje: "Error al actualizar factura",
+        mensaje: "Error al actualizar juicio",
       });
   }
 };

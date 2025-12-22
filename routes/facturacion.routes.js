@@ -9,8 +9,8 @@ const router = Router();
 const upload = multer({dest:"uploads/"});
 
 router.route("/").post([verficarJWT,upload.single("seleccionarArchivo"),validarFactura],crearFacturacion).get(listaFacturacion);
-router.route("/:id").get(validarId,obtenerFacturacionPorId).delete([verficarJWT,validarId],eliminarFacturacion).put([verficarJWT,validarId,validarFactura],editarFacturacion);
-router.get("/:id/descargar", validarId, descargarFacturacion)
+router.route("/:id").get(validarId,obtenerFacturacionPorId).delete([verficarJWT,validarId],eliminarFacturacion).put([verficarJWT,validarId,upload.single("seleccionarArchivo"),validarFactura],editarFacturacion);
+router.get("/:id/descargar", [verficarJWT, validarId], descargarFacturacion)
 
 
 export default router;
