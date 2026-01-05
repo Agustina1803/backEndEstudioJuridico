@@ -9,9 +9,9 @@ export const crearFacturacion = async (req, res) => {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
     const resultado = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
+      resource_type: "raw",
       folder: "facturas_pdf",
-      access_mode: "public",
+     pages: true,
     });
     fs.unlinkSync(req.file.path);
     const facturacionNuevo = new Facturacion({
@@ -27,9 +27,12 @@ export const crearFacturacion = async (req, res) => {
       estado: req.body.estado,
     });
     await facturacionNuevo.save();
-    const facturaFormateada ={
+    const facturaFormateada = {
       ...facturacionNuevo.toObject(),
-      fecha: facturacionNuevo.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      fecha: facturacionNuevo.fecha
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "/"),
     };
     res.status(201).json({
       mensaje: "Facturación fue subida con éxito",
@@ -45,7 +48,7 @@ export const crearFacturacion = async (req, res) => {
 //get
 export const listaFacturacion = async (req, res) => {
   try {
-    const { nombreCliente,  estado, fecha } = req.query;
+    const { nombreCliente, estado, fecha } = req.query;
     const filtro = {};
 
     if (nombreCliente) {
@@ -62,8 +65,8 @@ export const listaFacturacion = async (req, res) => {
 
     const listaFacturas = await Facturacion.find(filtro);
     const facturaTransformada = listaFacturas.map((factura) => ({
-     ...factura.toObject()  
-     , fecha: factura.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      ...factura.toObject(),
+      fecha: factura.fecha.toISOString().split("T")[0].replace(/-/g, "/"),
     }));
     res.status(200).json(facturaTransformada);
   } catch (error) {
@@ -85,7 +88,10 @@ export const obtenerFacturacionPorId = async (req, res) => {
     }
     const facturaFormateada = {
       ...obtenerFacturacionPorId.toObject(),
-      fecha: obtenerFacturacionPorId.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      fecha: obtenerFacturacionPorId.fecha
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "/"),
     };
     res.status(200).json(facturaFormateada);
   } catch (error) {
@@ -133,10 +139,10 @@ export const editarFacturacion = async (req, res) => {
     }
     let updateData = req.body;
     if (req.file) {
-    const resultado = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
-      folder: "facturas_pdf",
-    });
+      const resultado = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "raw",
+        folder: "facturas_pdf",
+      });
       fs.unlinkSync(req.file.path);
       if (
         facturaActual.seleccionarArchivo &&
@@ -167,20 +173,15 @@ export const editarFacturacion = async (req, res) => {
         .split("T")[0]
         .replace(/-/g, "/"),
     };
-    res
-      .status(200)
-      .json({
-        mensaje: "Facturación actualizada con éxito",
-        factura: facturacionEditado,
-      });
+    res.status(200).json({
+      mensaje: "Facturación actualizada con éxito",
+      factura: facturacionEditado,
+    });
   } catch (error) {
-    console.error(
-      "Error al actualizar:",);
-    res
-      .status(400)
-      .json({
-        mensaje: "Error al actualizar factura",
-      });
+    console.error("Error al actualizar:");
+    res.status(400).json({
+      mensaje: "Error al actualizar factura",
+    });
   }
 };
 
@@ -192,10 +193,16 @@ export const descargarFacturacion = async (req, res) => {
         .status(404)
         .json({ mensaje: "La factura con ese ID no existe" });
     }
-    const urlDescarga = factura.seleccionarArchivo.url + "?fl_attachment";
-    res.redirect(urlDescarga);
+    const response = await fetch(factura.seleccionarArchivo.url);
+    if (!response.ok) throw new Error("Error al obtener la factura");
+    const buffer = await response.arrayBuffer();
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${factura.seleccionarArchivo.nombre}"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(Buffer.from(buffer));
   } catch (error) {
-    console.error(error);
     res.status(500).json({ mensaje: "Error al descargar la factura" });
   }
 };

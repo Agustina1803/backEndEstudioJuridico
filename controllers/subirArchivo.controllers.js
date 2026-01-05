@@ -197,7 +197,7 @@ export const editarSubirArchivo = async (req, res) => {
 export const descargarSubirArchivo = async (req, res) => {
   try {
     const archivo = await SubirArchivo.findById(req.params.id);
-    if (!archivo) return res.status(404).json({ mensaje: "No existe" });
+    if (!archivo) return res.status(404).json({ mensaje: "El archivo con ese ID no existe" });
     const response = await fetch(archivo.seleccionarArchivo.url);
     if (!response.ok) throw new Error("Error al obtener archivo");
     const buffer = await response.arrayBuffer();
