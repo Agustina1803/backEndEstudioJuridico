@@ -9,7 +9,7 @@ export const crearJuicio = async (req, res) => {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
     const resultado = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
+      resource_type: "raw",
       folder: "juicios_pdf",
     });
     fs.unlinkSync(req.file.path);
@@ -122,14 +122,20 @@ export const actualizarJuicio = async (req, res) => {
     let updateData = req.body;
     if (req.file) {
       const resultado = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: "auto",
+        resource_type: "raw",
         folder: "juicios_pdf",
       });
       fs.unlinkSync(req.file.path);
-      if (juicioActual.seleccionarArchivo && juicioActual.seleccionarArchivo.public_id) {
-        await cloudinary.uploader.destroy(juicioActual.seleccionarArchivo.public_id, {
-          resource_type: "raw",
-        });
+      if (
+        juicioActual.seleccionarArchivo &&
+        juicioActual.seleccionarArchivo.public_id
+      ) {
+        await cloudinary.uploader.destroy(
+          juicioActual.seleccionarArchivo.public_id,
+          {
+            resource_type: "raw",
+          }
+        );
       }
       updateData.seleccionarArchivo = {
         url: resultado.secure_url,
@@ -142,23 +148,17 @@ export const actualizarJuicio = async (req, res) => {
       updateData,
       { new: true, runValidators: true }
     );
-    res
-      .status(200)
-      .json({
-        mensaje: "juicio actualizado con éxito",
-        juicio: juicioEditado,
-      });
+    res.status(200).json({
+      mensaje: "juicio actualizado con éxito",
+      juicio: juicioEditado,
+    });
   } catch (error) {
-    console.error(
-      "Error al actualizar:", error);
-    res
-      .status(400)
-      .json({
-        mensaje: "Error al actualizar juicio",
-      });
+    console.error("Error al actualizar:", error);
+    res.status(400).json({
+      mensaje: "Error al actualizar juicio",
+    });
   }
 };
-
 
 export const descargarJuicio = async (req, res) => {
   try {
@@ -168,8 +168,16 @@ export const descargarJuicio = async (req, res) => {
         .status(404)
         .json({ mensaje: "el juicio con ese ID no existe" });
     }
-    const urlDescarga = juicio.seleccionarArchivo.url + "?fl_attachment";
-    res.redirect(urlDescarga);
+    const response = await fetch(juicio.seleccionarArchivo.url);
+    if (!response.ok) {
+      throw new Error("Error al obtener el juicio");
+    }
+    const buffer = await response.arrayBuffer();
+    res.setHeader(
+      "Content-Disposition", `attachment; filename="${juicio.seleccionarArchivo.nombre}"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(Buffer.from(buffer));
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al descargar el juicio" });
