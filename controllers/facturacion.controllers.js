@@ -31,8 +31,7 @@ export const crearFacturacion = async (req, res) => {
       ...facturacionNuevo.toObject(),
       fecha: facturacionNuevo.fecha
         .toISOString()
-        .split("T")[0]
-        .replace(/-/g, "/"),
+        .split("T")[0],
     };
     res.status(201).json({
       mensaje: "Facturación fue subida con éxito",
@@ -66,7 +65,7 @@ export const listaFacturacion = async (req, res) => {
     const listaFacturas = await Facturacion.find(filtro);
     const facturaTransformada = listaFacturas.map((factura) => ({
       ...factura.toObject(),
-      fecha: factura.fecha.toISOString().split("T")[0].replace(/-/g, "/"),
+      fecha: factura.fecha.toISOString().split("T")[0],
     }));
     res.status(200).json(facturaTransformada);
   } catch (error) {
@@ -90,8 +89,7 @@ export const obtenerFacturacionPorId = async (req, res) => {
       ...obtenerFacturacionPorId.toObject(),
       fecha: obtenerFacturacionPorId.fecha
         .toISOString()
-        .split("T")[0]
-        .replace(/-/g, "/"),
+        .split("T")[0],
     };
     res.status(200).json(facturaFormateada);
   } catch (error) {

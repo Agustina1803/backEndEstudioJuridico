@@ -19,7 +19,7 @@ export const crearSubirArchivo = async (req, res) => {
     const archivoNuevo = new SubirArchivo({
       nombreCliente: req.body.nombreCliente,
       tipodearchivo: req.body.tipodearchivo,
-      fecha: req.body.fecha,
+      fecha: new Date(req.body.fecha),
       seleccionarArchivo: {
         url: resultado.secure_url,
         public_id: resultado.public_id,
@@ -29,7 +29,7 @@ export const crearSubirArchivo = async (req, res) => {
     await archivoNuevo.save();
     const archivoFormateado = {
       ...archivoNuevo.toObject(),
-      fecha: archivoNuevo.fecha.toISOString().split("T")[0].replace(/-/g, "/"),
+      fecha: archivoNuevo.fecha.toISOString().split("T")[0],
     };
     res.status(201).json({
       mensaje: "El archivo fue subido con éxito",
@@ -64,7 +64,7 @@ export const listaSubirArchivo = async (req, res) => {
     const archivos = await SubirArchivo.find(filtro);
     const archivosFormateados = archivos.map((archivo) => ({
       ...archivo.toObject(),
-      fecha: archivo.fecha.toISOString().split("T")[0].replace(/-/g, "/"),
+      fecha: archivo.fecha.toISOString().split("T")[0],
     }));
     res.status(200).json(archivosFormateados);
   } catch (error) {
@@ -88,8 +88,7 @@ export const obtenerSubirArchivoPorId = async (req, res) => {
       ...obtenerSubirArchivoPorId.toObject(),
       fecha: obtenerSubirArchivoPorId.fecha
         .toISOString()
-        .split("T")[0]
-        .replace(/-/g, "/"),
+        .split("T")[0],
     };
     res.status(200).json(archivoFormateado);
   } catch (error) {
