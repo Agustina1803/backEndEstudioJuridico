@@ -12,5 +12,5 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.route('/').get(obtenerJuicio).post([verficarJWT,upload.single("seleccionarArchivo"), validacionJuicio],crearJuicio);
 router.route('/:id').get(validarId,obtenerJuicioPorId).delete([verficarJWT, validarId],eliminarJuicio).put([verficarJWT,validarId, upload.single("seleccionarArchivo"), validacionJuicio], actualizarJuicio);
-router.get("/:id/descargar", [verficarJWT, validarId], descargarJuicio)
+router.route("/descargar/:id").get([verficarJWT, validarId], descargarJuicio)
 export default router;

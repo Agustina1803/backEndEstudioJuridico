@@ -10,7 +10,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.route("/").post([verficarJWT,upload.single("seleccionarArchivo"),validarFactura],crearFacturacion).get(listaFacturacion);
 router.route("/:id").get(validarId,obtenerFacturacionPorId).delete([verficarJWT,validarId],eliminarFacturacion).put([verficarJWT,validarId,upload.single("seleccionarArchivo"),validarFactura],editarFacturacion);
-router.get("/:id/descargar", [verficarJWT, validarId], descargarFacturacion)
+router.route("/descargar/:id").get([verficarJWT, validarId], descargarFacturacion)
 
 
 export default router;

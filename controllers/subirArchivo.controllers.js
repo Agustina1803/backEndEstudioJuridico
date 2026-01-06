@@ -1,22 +1,21 @@
 import SubirArchivo from "../models/subirArchivo.js";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 //POST
 export const crearSubirArchivo = async (req, res) => {
   try {
-     if (!req.file) {
+    if (!req.file) {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
-    const resultado = await cloudinary.uploader.upload(req.file.buffer, {
-      resource_type: "auto",
+    const resultado = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, {
+      resource_type: "raw",
       folder: "archivos_pdf",
     });
 
     const archivoNuevo = new SubirArchivo({
       nombreCliente: req.body.nombreCliente,
       tipodearchivo: req.body.tipodearchivo,
-      fecha: req.body.fecha,
+      fecha: new Date(req.body.fecha),
       seleccionarArchivo: {
         url: resultado.secure_url,
         public_id: resultado.public_id,
@@ -26,7 +25,7 @@ export const crearSubirArchivo = async (req, res) => {
     await archivoNuevo.save();
     const archivoFormateado = {
       ...archivoNuevo.toObject(),
-      fecha: archivoNuevo.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      fecha: archivoNuevo.fecha.toISOString().split("T")[0],
     };
     res.status(201).json({
       mensaje: "El archivo fue subido con éxito",
@@ -48,7 +47,7 @@ export const listaSubirArchivo = async (req, res) => {
     let filtro = {};
 
     if (nombreCliente) {
-      filtro.nombreCliente = { $regex: nombreCliente, $options: 'i' };
+      filtro.nombreCliente = { $regex: nombreCliente, $options: "i" };
     }
 
     if (fecha) {
@@ -59,9 +58,9 @@ export const listaSubirArchivo = async (req, res) => {
     }
 
     const archivos = await SubirArchivo.find(filtro);
-    const archivosFormateados = archivos.map(archivo => ({
+    const archivosFormateados = archivos.map((archivo) => ({
       ...archivo.toObject(),
-      fecha: archivo.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      fecha: archivo.fecha.toISOString().split("T")[0],
     }));
     res.status(200).json(archivosFormateados);
   } catch (error) {
@@ -83,7 +82,9 @@ export const obtenerSubirArchivoPorId = async (req, res) => {
     }
     const archivoFormateado = {
       ...obtenerSubirArchivoPorId.toObject(),
-      fecha: obtenerSubirArchivoPorId.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      fecha: obtenerSubirArchivoPorId.fecha
+        .toISOString()
+        .split("T")[0],
     };
     res.status(200).json(archivoFormateado);
   } catch (error) {
@@ -135,21 +136,27 @@ export const editarSubirArchivo = async (req, res) => {
     let updateData = req.body;
 
     if (req.file) {
-      const resultado = await cloudinary.uploader.upload(req.file.buffer, {
-        resource_type: "auto",
+      const resultado = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, {
+        resource_type: "raw",
         folder: "archivos_pdf",
       });
 
-      
-      if (archivoExistente.seleccionarArchivo && archivoExistente.seleccionarArchivo.public_id) {
-        await cloudinary.uploader.destroy(archivoExistente.seleccionarArchivo.public_id, {
-          resource_type: "raw",
-        });
+      if (
+        archivoExistente.seleccionarArchivo &&
+        archivoExistente.seleccionarArchivo.public_id
+      ) {
+        await cloudinary.uploader.destroy(
+          archivoExistente.seleccionarArchivo.public_id,
+          {
+            resource_type: "raw",
+          }
+        );
       }
       updateData.seleccionarArchivo = {
         url: resultado.secure_url,
         public_id: resultado.public_id,
-        nombre: req.file.originalname || archivoExistente.seleccionarArchivo.nombre,
+        nombre:
+          req.file.originalname || archivoExistente.seleccionarArchivo.nombre,
       };
     }
 
@@ -161,7 +168,10 @@ export const editarSubirArchivo = async (req, res) => {
 
     const archivoFormateado = {
       ...ArchivoEditado.toObject(),
-      fecha: ArchivoEditado.fecha.toISOString().split('T')[0].replace(/-/g, '/')
+      fecha: ArchivoEditado.fecha
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "/"),
     };
     res.status(200).json({
       mensaje: "Archivo actualizado con exito",
@@ -179,18 +189,17 @@ export const editarSubirArchivo = async (req, res) => {
 export const descargarSubirArchivo = async (req, res) => {
   try {
     const archivo = await SubirArchivo.findById(req.params.id);
-    if (!archivo) {
-      return res.status(404).json({
-        mensaje: "El archivo con ese ID no existe",
-      });
-    }
-
-  
-    res.redirect(archivo.seleccionarArchivo.url + "?fl_attachment");
+    if (!archivo) return res.status(404).json({ mensaje: "El archivo con ese ID no existe" });
+    const response = await fetch(archivo.seleccionarArchivo.url);
+    if (!response.ok) throw new Error("Error al obtener archivo");
+    const buffer = await response.arrayBuffer();
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${archivo.seleccionarArchivo.nombre}"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(Buffer.from(buffer));
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      mensaje: "Error al descargar el archivo",
-    });
+    res.status(500).json({ mensaje: "Error al descargar" });
   }
 };
