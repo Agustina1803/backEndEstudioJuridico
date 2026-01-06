@@ -8,13 +8,8 @@ export const crearJuicio = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
-<<<<<<< HEAD
-    const resultado = await cloudinary.uploader.upload(req.file.buffer, {
-      resource_type: "auto",
-=======
     const resultado = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "raw",
->>>>>>> dev
       folder: "juicios_pdf",
     });
     const juicioNuevo = new Juicio({
@@ -125,16 +120,6 @@ export const actualizarJuicio = async (req, res) => {
     }
     let updateData = req.body;
     if (req.file) {
-<<<<<<< HEAD
-      const resultado = await cloudinary.uploader.upload(req.file.buffer, {
-        resource_type: "auto",
-        folder: "juicios_pdf",
-      });
-      if (juicioActual.seleccionarArchivo && juicioActual.seleccionarArchivo.public_id) {
-        await cloudinary.uploader.destroy(juicioActual.seleccionarArchivo.public_id, {
-          resource_type: "raw",
-        });
-=======
       const resultado = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "raw",
         folder: "juicios_pdf",
@@ -150,7 +135,6 @@ export const actualizarJuicio = async (req, res) => {
             resource_type: "raw",
           }
         );
->>>>>>> dev
       }
       updateData.seleccionarArchivo = {
         url: resultado.secure_url,

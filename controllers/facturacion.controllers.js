@@ -8,16 +8,10 @@ export const crearFacturacion = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
-<<<<<<< HEAD
-    const resultado = await cloudinary.uploader.upload(req.file.buffer, {
-      resource_type: "auto",
-      folder: "facturas_pdf",
-=======
     const resultado = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "raw",
       folder: "facturas_pdf",
      pages: true,
->>>>>>> dev
     });
     const facturacionNuevo = new Facturacion({
       fecha: req.body.fecha,
@@ -142,18 +136,11 @@ export const editarFacturacion = async (req, res) => {
     }
     let updateData = req.body;
     if (req.file) {
-<<<<<<< HEAD
-    const resultado = await cloudinary.uploader.upload(req.file.buffer, {
-      resource_type: "auto",
-      folder: "facturas_pdf",
-    });
-=======
       const resultado = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "raw",
         folder: "facturas_pdf",
       });
       fs.unlinkSync(req.file.path);
->>>>>>> dev
       if (
         facturaActual.seleccionarArchivo &&
         facturaActual.seleccionarArchivo.public_id
