@@ -1,6 +1,5 @@
 import SubirArchivo from "../models/subirArchivo.js";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 //POST
 export const crearSubirArchivo = async (req, res) => {
@@ -8,13 +7,11 @@ export const crearSubirArchivo = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
-    const resultado = await cloudinary.uploader.upload(req.file.path, {
+    const resultado = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, {
       resource_type: "raw",
       folder: "archivos_pdf",
       pages: true,
     });
-
-    fs.unlinkSync(req.file.path);
 
     const archivoNuevo = new SubirArchivo({
       nombreCliente: req.body.nombreCliente,
@@ -140,13 +137,11 @@ export const editarSubirArchivo = async (req, res) => {
     let updateData = req.body;
 
     if (req.file) {
-      const resultado = await cloudinary.uploader.upload(req.file.path, {
+      const resultado = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, {
         resource_type: "raw",
         folder: "archivos_pdf",
         pages: true,
       });
-
-      fs.unlinkSync(req.file.path);
 
       if (
         archivoExistente.seleccionarArchivo &&
