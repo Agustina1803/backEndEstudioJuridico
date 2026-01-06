@@ -13,7 +13,13 @@ export default class Server {
   }
 
   middlewares() {
-    this.app.use(cors());
+    this.app.use(
+      cors({
+        origin: ["https://apjdestudiojuridic.netlify.app"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+      })
+    );
     this.app.use(morgan("dev"));
     this.app.use(express.json());
     const __filename = fileURLToPath(import.meta.url);

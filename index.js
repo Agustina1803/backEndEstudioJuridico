@@ -4,8 +4,8 @@ import router from './routes/index.routes.js';
 const server = new Server();
 server.app.use('/api', router);
 
-if(process.env.NODE_ENV !== "production"){
-server.listen();
-}
+
+//server.listen();
+
 
 export default server.app;
