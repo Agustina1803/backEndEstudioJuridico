@@ -186,13 +186,11 @@ export const editarFacturacion = async (req, res) => {
 export const descargarFacturacion = async (req, res) => {
   try {
     const factura = await Facturacion.findById(req.params.id);
-    if (!factura) {
-      return res
-        .status(404)
-        .json({ mensaje: "La factura con ese ID no existe" });
-    }
+    if (!factura) return res.status(404).json({ mensaje: "La factura con ese ID no existe" });
+
     const response = await fetch(factura.seleccionarArchivo.url);
     if (!response.ok) throw new Error("Error al obtener la factura");
+
     const buffer = await response.arrayBuffer();
     res.setHeader(
       "Content-Disposition",
@@ -204,3 +202,4 @@ export const descargarFacturacion = async (req, res) => {
     res.status(500).json({ mensaje: "Error al descargar la factura" });
   }
 };
+
