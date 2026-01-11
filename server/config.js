@@ -15,7 +15,11 @@ export default class Server {
   middlewares() {
     this.app.use(
       cors({
-        origin: ["https://apjdestudiojuridic.netlify.app"],
+        origin: [
+          "https://apjdestudiojuridic.netlify.app",
+          "https://back-end-estudio-juridico-r8jt2ff00-agustinas-projects-e5351869.vercel.app",
+          "https://back-end-estudio-juridico.vercel.app"
+        ],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
       })
