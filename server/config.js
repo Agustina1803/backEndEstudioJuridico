@@ -15,17 +15,14 @@ export default class Server {
   middlewares() {
     this.app.use(
       cors({
-        origin: [
-          "https://apjdestudiojuridic.netlify.app",
-          "https://back-end-estudio-juridico-r8jt2ff00-agustinas-projects-e5351869.vercel.app",
-          "https://back-end-estudio-juridico.vercel.app"
-        ],
+        origin: true,
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
       })
     );
     this.app.use(morgan("dev"));
     this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     console.log(__filename);

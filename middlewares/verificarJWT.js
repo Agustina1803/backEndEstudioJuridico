@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 const verficarJWT = (req, res, next) =>{
     try{
         const token = req.headers["x-token"];
+        console.log("Token recibido en backend:", token);
         if(!token){
             return res.status(401).json({message:"No se envio un token"})
         }

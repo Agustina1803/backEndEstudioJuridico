@@ -137,7 +137,7 @@ export const login = async (req, res) => {
     if (!passwordCorrecto) {
       return res.status(401).send("Credenciales incorrectas");
     }
-    const token = await generarJWT(usuarioBuscado, passwordCorrecto);
+    const token = await generarJWT(usuarioBuscado.email, usuarioBuscado.role);
     console.log(usuarioBuscado);
     res.status(200).json({
       mensaje: "Logeo exitoso",
