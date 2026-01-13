@@ -27,8 +27,12 @@ export const crearUsuario = async (req, res) => {
 //GET
 export const obtenerUsuarios = async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, role } = req.query;
     const filtro = {};
+
+    if (role) {
+      filtro.role = role;
+    }
 
     if (search) {
       filtro.$or = [
