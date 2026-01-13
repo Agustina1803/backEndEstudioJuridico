@@ -64,7 +64,7 @@ export const listaSubirArchivo = async (req, res) => {
     }));
     res.status(200).json(archivosFormateados);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error al obtener los Archivos",
     });
@@ -88,7 +88,7 @@ export const obtenerSubirArchivoPorId = async (req, res) => {
     };
     res.status(200).json(archivoFormateado);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error al obtener el archivo por ID",
     });
@@ -115,7 +115,7 @@ export const eliminarSubirArchivo = async (req, res) => {
       mensaje: "archivo eliminado con exito",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error al borrar el archivo por ID",
     });
@@ -178,7 +178,7 @@ export const editarSubirArchivo = async (req, res) => {
       archivo: archivoFormateado,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error al actualizar el archivo por ID",
     });

@@ -10,7 +10,7 @@ export const crearCliente = async (req, res) => {
     
    
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             mensaje: "Error en el servidor al crear el cliente",
         });
@@ -43,7 +43,7 @@ export const obtenerClientes = async (req, res) => {
         res.status(200).json(clienteTransformado);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             mensaje: "Error al obtener la lista de clientes"
         });
@@ -62,7 +62,7 @@ export const obtenerClientes = async (req, res) => {
             }
             res.status(200).json(listarClientePorId);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({
                 mensaje: "Error al obtener el cliente por ID"
             })
@@ -82,7 +82,7 @@ export const obtenerClientes = async (req, res) => {
                 mensaje: "Cliente eliminado con exito"
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({
                 mensaje: "Error al borrar el cliente por ID"
             })
@@ -103,7 +103,7 @@ export const obtenerClientes = async (req, res) => {
                 clienteEditado
             );
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({
                 mensaje: "Error al actualizar el cliente por ID"
             });

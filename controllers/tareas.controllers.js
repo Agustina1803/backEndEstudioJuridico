@@ -17,7 +17,6 @@ export const crearTarea = async (req, res) => {
       "nombre apellido role"
     );
     res.status(201).json(tareaGuardada);
-    console.log("Body recibido en POST:", req.body);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Erorr en el servidor al crear la tarea" });
@@ -75,7 +74,7 @@ export const listarTareaPorID = async (req, res) => {
     }
     res.status(200).json(listaDeTareaPorID);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error en el servidor al obtener los usuarios ",
     });

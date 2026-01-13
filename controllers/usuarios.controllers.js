@@ -43,7 +43,7 @@ export const obtenerUsuarios = async (req, res) => {
     const usuarios = await Usuario.find(filtro);
     res.status(200).json(usuarios);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       message: "Error en el servidor al obtener los usuarios",
     });
@@ -61,7 +61,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
     }
     res.status(200).json(usuariosporID);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       message: "Error en el servidor al obtener el usuario por ID",
     });
@@ -81,7 +81,7 @@ export const eliminarUsuario = async (req, res) => {
       message: "Usuario eliminado exitosamente",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       message: "Error en el servidor al eliminar el usuario",
     });
@@ -117,7 +117,7 @@ export const actualizarUsuario = async (req, res) => {
       message: "Usuario actualizado exitosamente",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       message: "Error en el servidor al actualizar el usuario",
     });
@@ -126,7 +126,7 @@ export const actualizarUsuario = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    console.log("Body recibido en login:", req.body);
+    console.error("Body recibido en login:", req.body);
     const { email, formBasicPassword } = req.body;
     const usuarioBuscado = await Usuario.findOne({
       email: email,
@@ -142,7 +142,7 @@ export const login = async (req, res) => {
       return res.status(401).send("Credenciales incorrectas");
     }
     const token = await generarJWT(usuarioBuscado.email, usuarioBuscado.role);
-    console.log(usuarioBuscado);
+    console.error(usuarioBuscado);
     res.status(200).json({
       mensaje: "Logeo exitoso",
       token: token,

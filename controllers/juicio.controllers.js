@@ -30,7 +30,7 @@ export const crearJuicio = async (req, res) => {
       archivo: juicioNuevo,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error en el servidor al cargar el nuevo caso",
     });
@@ -58,7 +58,7 @@ export const obtenerJuicio = async (req, res) => {
     }));
     res.status(200).json(juiciosTransformado);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error en el servidor al obtener los juicios",
     });
@@ -76,7 +76,7 @@ export const obtenerJuicioPorId = async (req, res) => {
     }
     res.status(200).json(juicioporID);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error en el servidor al obtener el Caso por ID",
     });
@@ -101,7 +101,7 @@ export const eliminarJuicio = async (req, res) => {
       mensaje: "Caso eliminado exitosamente",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error en el servidor al eliminar el caso",
     });

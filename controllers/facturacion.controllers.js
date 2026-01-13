@@ -66,7 +66,7 @@ export const listaFacturacion = async (req, res) => {
     }));
     res.status(200).json(facturaTransformada);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error al obtener las facturas",
     });
@@ -90,7 +90,7 @@ export const obtenerFacturacionPorId = async (req, res) => {
     };
     res.status(200).json(facturaFormateada);
   } catch (error) {
-    console.log(error);
+    (error);
     res.status(500).json({
       mensaje: "La facturacion el archivo por ID",
     });
@@ -118,7 +118,7 @@ export const eliminarFacturacion = async (req, res) => {
       mensaje: "La factura fue eliminada con exito",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       mensaje: "Error al borrar la factura por ID",
     });

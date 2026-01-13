@@ -6,7 +6,6 @@ const verficarJWT = (req, res, next) =>{
         if (token && token.startsWith("Bearer ")) {
             token = token.slice(7);
         }
-        console.log("Token recibido en backend:", token);
         if(!token){
             return res.status(401).json({message:"No se envio un token"})
         }
