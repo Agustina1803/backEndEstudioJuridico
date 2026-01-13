@@ -1,6 +1,5 @@
 import Facturacion from "../models/facturacion.js";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 //POST
 export const crearFacturacion = async (req, res) => {
@@ -8,13 +7,12 @@ export const crearFacturacion = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ mensaje: "Debe subir un archivo" });
     }
-    const resultado = await cloudinary.uploader.upload(req.file.path, {
+    const resultado = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, {
       resource_type: "raw",
       folder: "facturas_pdf",
-     pages: true,
     });
     const facturacionNuevo = new Facturacion({
-      fecha: req.body.fecha,
+      fecha: new Date(req.body.fecha),
       nombreCliente: req.body.nombreCliente,
       concepto: req.body.concepto,
       seleccionarArchivo: {
@@ -136,11 +134,10 @@ export const editarFacturacion = async (req, res) => {
     }
     let updateData = req.body;
     if (req.file) {
-      const resultado = await cloudinary.uploader.upload(req.file.path, {
+      const resultado = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, {
         resource_type: "raw",
         folder: "facturas_pdf",
       });
-      fs.unlinkSync(req.file.path);
       if (
         facturaActual.seleccionarArchivo &&
         facturaActual.seleccionarArchivo.public_id
@@ -172,7 +169,7 @@ export const editarFacturacion = async (req, res) => {
     };
     res.status(200).json({
       mensaje: "Facturación actualizada con éxito",
-      factura: facturacionEditado,
+      archivo: archivoFormateado,
     });
   } catch (error) {
     console.error("Error al actualizar:");
@@ -201,4 +198,3 @@ export const descargarFacturacion = async (req, res) => {
     res.status(500).json({ mensaje: "Error al descargar la factura" });
   }
 };
-
