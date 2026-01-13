@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
-import "../database/config.js";
+import connectDB from "../database/config.js";
 
 export default class Server {
   constructor() {
@@ -13,6 +13,16 @@ export default class Server {
   }
 
   middlewares() {
+    this.app.use(async (req, res, next) => {
+      try {
+        await connectDB();
+        next();
+      } catch (error) {
+        console.error("Error connecting to DB:", error);
+        res.status(500).json({ message: "Database connection error" });
+      }
+    });
+
     this.app.use(
       cors({
         origin: true,

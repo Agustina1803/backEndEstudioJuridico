@@ -9,12 +9,18 @@ if (!uri) {
   throw new Error("La variable MONGODB no está definida en el archivo .env");
 }
 
-mongoose.connect(uri)
-  .then(() => {
-    console.info("Conectado a MongoDB Atlas");
-  })
-  .catch((error) => {
-    console.error("Error al conectar a MongoDB:", error.message);
-  });
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
 
-export default mongoose;
+  try {
+    await mongoose.connect(uri);
+    console.info("Conectado a MongoDB Atlas");
+  } catch (error) {
+    console.error("Error al conectar a MongoDB:", error.message);
+    throw error;
+  }
+};
+
+export default connectDB;
